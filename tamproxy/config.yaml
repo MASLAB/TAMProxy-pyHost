@@ -1,0 +1,177 @@
+
+host:
+    # fill out port to disable automatic scan
+    port:                   ''
+    window_size:            12
+        # Number of packets that can be dispatched and unacklowledged at 
+        # any point in time. Generally should be increased until increasing
+        # it more doesn't increase the throughput much.
+    enable_timeout:         False 
+        # Whether to enable detection of lost packets, retransmitting them if
+        # necessary. Since USB already has CRC checks that ensure reliability,
+        # this typically isn't needed and takes a very small hit on throughput
+    initial_timeout:        0.01
+        # Initial value of time difference at which a packet is declared lost
+        # if a response wasn't received. The packet is then retransmitted
+    srtt_alpha:             0.01
+        # Used in exponential moving average filter for srtt adjusting
+    rttdev_alpha:           0.01
+        # Used in exponential moving average filter for rttdev adjusting
+    srtt_gain:              10  # srtt gain in timeout calculation
+    rttdev_gain:            40  # rttdev gain in timeout calculation
+    serial_retries:         15
+        # Number of times host will try to reconnect after a disconnect
+    serial_retry_timeout:   1
+        # Time to wait inbetween retries
+    prime_tries:            10
+        # How many times to try to prime the serial connection with HELLO
+        # requests. Used when establishing a connection.
+    prime_count:            3
+        # Number of HELLO packets to send per prime try.
+    prime_sleep:            0.001
+        # Time to wait inbetween sending HELLO packets
+    pack_format:            '<BHBB{}s'
+        # AKA little endian <start byte, id (2 bytes), length byte, string>
+    unpack_format:          '<BHB{}s'
+        # Same as above but without destination
+    reset_msg:              RESET
+        # The packet controller sends this if the device just connected
+        # This is forwarded to the microcontroller, which then sends packets
+        # telling the firmware to clear (re)add its devices. 
+    default_sleep_duration: 0.00002
+        # The default sleep time for the main thread between loops
+        # The higher this is, the more time the packet_forwarder gets,
+        # which affects throughput. 
+        # Setting it to 0 decreases throughput significantly
+
+firmware:
+    # GENERAL
+    num_pins:           34      # Used to reset all pins
+    baud_rate:          115200  # Doesn't actually matter for pure USB
+    adc_resolution:     16      # How many bits to read with the ADC
+    # PWM SETTINGS
+    # See https://www.pjrc.com/teensy/td_pulse.html for
+    # ideal frequencies at a certain resolution
+    pwm_resolution:     8       # 16 max
+    pwm0_frequency:     187500
+    pwm1_frequency:     187500
+    pwm2_frequency:     187500
+    ftm0pin:            5       # Shouldn't have to change this
+    ftm1pin:            6       # Shouldn't have to change this
+    ftm2pin:            25      # Shouldn't have to change this
+
+devices:
+    devicelist:
+        code:           0xFF
+        add_code:       A       # 0x41
+        remove_code:    R       # 0x52
+        clear_code:     C       # 0x43
+        hello_code:     K       # r u ok????
+    digital_input:
+        code:           D       # 0x44
+        read_code:      R       # 0x47
+    digital_output:
+        code:           d       # 0x64
+        write_code:     W       # 0x57
+    analog_input:
+        code:           A       # 0x41
+    analog_output:
+        code:           a       # 0x61
+    encoder:
+        code:           E       # 0x45
+    motor:
+        code:           M       # 0x4d
+    feedback_motor:
+        code:           m       # 0x6d
+    servo:
+        code:           S       # 0x53
+    stepper:
+        code:           s       # 0x73
+    gyro:
+        code:           G       # 0x47
+    ultrasonic:
+        code:           U       # 0x55
+    ir:
+        code:           I       # 0x49
+    color:
+        code:           C       # 0x43 (color sensor)
+
+packet:
+    start_byte:         0xF0
+        # dont ever use this in a packet body or other code
+    min_request_size:   6       
+        # 2 for the header, 1 for the dest, 1 for the payload
+    min_response_size:  5      
+        # 2 for the header, 1 for the payload
+    max_size:           32
+        # can be raised if desired at the expense of max throughput
+
+# SERIAL ERROR CODES
+# These are all sent in no man's land (between packets)
+# becase an intact packet ID could not be read.
+serial_errors:
+    L: 
+        name: packet_oor
+        msg:  Packet length was out of range
+    S: 
+        name: packet_short
+        msg:  Packet was shorter than min_packet_size
+    N: 
+        name: no_mans_land
+        msg:  A byte was sent outside packet start and end bytes
+
+# GENERAL RESPONSE CODES
+# These are common errors devices can reply with, and their meanings
+responses:
+    G: 
+        name: ok
+        msg:  Its all G
+    D: 
+        name: dest_not_found
+        msg:  The dest byte does not match a device
+    W: 
+        name: request_body_invalid
+        msg:  The device does not know how to handle the request
+    X:
+        name: request_length_invalid
+        msg:  Request payload was the wrong size
+    Y:
+        name: device_oor
+        msg:  Device index out of range (used in deletion)
+    Z: 
+        name: device_invalid
+        msg:  The device code given is invalid
+
+# Logging not implemented yet
+# Preliminary testing suggest it adds a ton of overhead
+logging:
+    version: 1
+    formatters:
+        simple:
+            format: '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    handlers:
+        console:
+            class: logging.StreamHandler
+            level: WARNING
+            formatter: simple
+            stream: ext://sys.stdout
+        packet_verbose:
+            class: logging.handlers.RotatingFileHandler
+            level: DEBUG
+            formatter: simple
+            filename: logs/packet_verbose.log
+            backupCount: 5
+        packet:
+            class: logging.handlers.RotatingFileHandler
+            level: WARNING
+            formatter: simple
+            filename: logs/packet.log
+            backupCount: 5
+    loggers:
+        packet:
+            level: DEBUG
+            handlers: [console, packet, packet_verbose]
+            propagate: no
+    root:
+        level: DEBUG
+

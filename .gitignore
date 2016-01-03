@@ -1,0 +1,8 @@
+# for pyenv
+.python-version
+# python junk
+*.pyc
+# for generated config headers
+*.h
+# for logfiles               
+*.log
