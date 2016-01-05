@@ -8,7 +8,7 @@ class DigitalInput(Device):
 
     def __init__(self, tamproxy, pin, pullup=True, continuous=True):
         self.pin = pin
-        self.pullup = True
+        self.pullup = pullup
         self.val = 0
         self.prev_val = None
         super(DigitalInput, self).__init__(tamproxy)
