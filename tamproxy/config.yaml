@@ -53,9 +53,9 @@ firmware:
     # See https://www.pjrc.com/teensy/td_pulse.html for
     # ideal frequencies at a certain resolution
     pwm_resolution:     8       # 16 max
-    pwm0_frequency:     187500
-    pwm1_frequency:     187500
-    pwm2_frequency:     187500
+    pwm0_frequency:     488.28
+    pwm1_frequency:     488.28
+    pwm2_frequency:     488.28
     ftm0pin:            5       # Shouldn't have to change this
     ftm1pin:            6       # Shouldn't have to change this
     ftm2pin:            25      # Shouldn't have to change this
