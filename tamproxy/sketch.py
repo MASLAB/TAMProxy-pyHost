@@ -3,7 +3,7 @@ from tamproxy import TAMProxy
 from time import sleep, time
 from . import config as c
 
-class Sketch:
+class Sketch(object):
     __metaclass__ = ABCMeta
 
     def __init__(self, sleep_duration=c.host.default_sleep_duration):

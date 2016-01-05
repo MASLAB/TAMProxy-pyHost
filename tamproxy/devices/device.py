@@ -1,7 +1,7 @@
 from abc import ABCMeta, abstractproperty
 from .. import TAMProxy
 
-class Device:
+class Device(object):
     __metaclass__ = ABCMeta
 
     def __init__(self, tamproxy):

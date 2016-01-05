@@ -1,7 +1,7 @@
 from comm import PacketForwarder
 from . import config as c
 
-class TAMProxy:
+class TAMProxy(object):
 
     DEVICELIST_CODE =   c.devices.devicelist.code
     ADD_CODE =          c.devices.devicelist.add_code

@@ -198,7 +198,7 @@ class PacketController(Process):
             except KeyboardInterrupt:
                 return
 
-class PacketParser:
+class PacketParser(object):
 
     MAX_PACKET_SIZE =   c.packet.max_size
     MIN_PACKET_SIZE =   c.packet.min_response_size
