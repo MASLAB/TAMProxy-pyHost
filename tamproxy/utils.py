@@ -34,7 +34,7 @@ with open(target, 'r') as config_file:
 
 config = dotdict(yaml.load(config_yaml))
 
-class Timer():
+class Timer(object):
 
     def __init__(self):
         self.val = time()
