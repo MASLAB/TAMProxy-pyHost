@@ -11,7 +11,7 @@ class dotdict(dict):
             for key in value:
                 self.__setitem__(key, value[key])
         else:
-            raise TypeError, 'expected dict'
+            raise TypeError('expected dict')
 
     def __setitem__(self, key, value):
         if isinstance(value, dict) and not isinstance(value, dotdict):
