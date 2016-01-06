@@ -1,4 +1,4 @@
-from comm import PacketForwarder
+from .comm import PacketForwarder
 from . import config as c
 
 class TAMProxy(object):

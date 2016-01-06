@@ -1,8 +1,6 @@
 from threading import Thread, Event
 from Queue import Queue, Empty
-from multiprocessing import Process
-from packet_controller import PacketController
-from time import sleep
+from .packet_controller import PacketController
 from .. import config as c
 
 class PacketForwarder(Thread):

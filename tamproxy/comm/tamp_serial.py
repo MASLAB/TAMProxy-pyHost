@@ -75,7 +75,7 @@ class TAMPSerial(serial.Serial):
                 self.write(self.hello_packet)
             sleep(c.host.prime_sleep)
             n_received = ((self.in_waiting - received)
-                         / self.hello_response_length)
+                          // self.hello_response_length)
             print "Received", n_received, "new HELLO responses"
             if n_received == self.PRIME_COUNT:
                 self.read(self.in_waiting)
@@ -90,3 +90,5 @@ class TAMPSerial(serial.Serial):
 
 class SerialPortUnavailableException(IOError): pass
 class SerialPortEstablishException(IOError): pass
+
+__all__ = ['TAMPSerial', 'SerialPortUnavailableException', 'SerialPortEstablishException']

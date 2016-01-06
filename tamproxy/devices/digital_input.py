@@ -1,4 +1,4 @@
-from device import Device
+from .device import Device
 from .. import config as c
 
 class DigitalInput(Device):
