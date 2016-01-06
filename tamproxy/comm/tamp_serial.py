@@ -30,8 +30,7 @@ class TAMPSerial(serial.Serial):
         ports = self.detect_ports()
         if not ports:
             raise SerialPortUnavailableException(
-                ("[SerialPortUnavailableException] ",
-                "No suitable serial port detected"))
+                "[SerialPortUnavailableException] No suitable serial port detected")
         if len(ports) == 1: return ports[0]    
         else:
             print "Enter the index of the desired serial port:"
