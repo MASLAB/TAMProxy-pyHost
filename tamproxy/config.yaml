@@ -69,12 +69,13 @@ devices:
         hello_code:     K       # r u ok????
     digital_input:
         code:           D       # 0x44
-        read_code:      R       # 0x47
+        read_code:      R       # 0x52
     digital_output:
         code:           d       # 0x64
         write_code:     W       # 0x57
     analog_input:
         code:           A       # 0x41
+        read_code:      R       # 0x52
     analog_output:
         code:           a       # 0x61
     encoder:

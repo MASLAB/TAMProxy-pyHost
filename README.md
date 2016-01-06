@@ -35,13 +35,13 @@ Right now this firmware only works with the Teensy 3.x, with the support of the 
 
 Communicating with certain peripherals that need high-speed or advanced features such as interrupts, SPI, or I2C will be difficult to use if support for that peripheral isn't built into TAMProxy yet.
 
-Adding support for these peripherals is best done by extending this firmware by adding a new peripheral class, as described below. Despite the relatively high throughput of the USB packet protocol, trying to handle these high speed features oh the host side is probably infeasible.
+Adding support for these peripherals is best done by extending the corresponding firmware ([TAMProxy-Firmware](https://github.com/mitchgu/TAMProxy-Firmware))
 
 Supported Devices
 -----------------
 - [x] Digital input
 - [x] Digital output
-- [ ] Analog input
+- [x] Analog input
 - [ ] Analog output (PWM, or ADC on A14/40)
 - [ ] Quadrature encoder
 - [ ] Standard Motor (Cytron/Dago with PWM & dir)
@@ -50,7 +50,8 @@ Supported Devices
 - [ ] Stepper Motor
 - [ ] Analog Devices Gyroscope (SPI)
 - [ ] Ultrasonic Distance Sensor
-- [ ] Short-range IR Distance Sensor
+- [x] Short-range IR Distance Sensor (just an analog input)
+- [x] Ultra-short range IR Distance Sensor (just a digital input)
 - [ ] Color Sensor (SPI)
 
 
