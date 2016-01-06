@@ -1,4 +1,3 @@
-from tamp_serial import *
 from serial import SerialException
 from multiprocessing import Process, Pipe, Event
 from collections import namedtuple
@@ -10,6 +9,7 @@ import numpy as np
 import logging
 import logging.config
 from .. import config as c
+from .tamp_serial import *
 
 class PacketController(Process):
 
