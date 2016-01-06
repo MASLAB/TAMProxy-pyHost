@@ -83,6 +83,7 @@ devices:
         code:           E       # 0x45
     motor:
         code:           M       # 0x4d
+        write_code:     W       # 0x57
     feedback_motor:
         code:           m       # 0x6d
     servo:

@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='tamproxy',
-    version='0.0.3',
+    version='0.0.4',
 
     description='TAMProxy Python Host',
     url='https://github.com/mitchgu/TAMProxy-pyHost',
