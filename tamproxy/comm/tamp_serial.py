@@ -22,7 +22,8 @@ class TAMPSerial(serial.Serial):
                                          self.BAUD_RATE,
                                          timeout=0,
                                          write_timeout=0)
-        self.nonblocking()
+        if hasattr(self, 'nonblocking'):
+            self.nonblocking()
         if hello_packet: self.establish()
 
     def get_port(self):
