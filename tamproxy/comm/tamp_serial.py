@@ -90,3 +90,5 @@ class TAMPSerial(serial.Serial):
 
 class SerialPortUnavailableException(IOError): pass
 class SerialPortEstablishException(IOError): pass
+
+__all__ = ['TAMPSerial', 'SerialPortUnavailableException', 'SerialPortEstablishException']
