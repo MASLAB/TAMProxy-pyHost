@@ -78,6 +78,7 @@ devices:
         read_code:      R       # 0x52
     analog_output:
         code:           a       # 0x61
+        write_code:     W       # 0x57
     encoder:
         code:           E       # 0x45
     motor:
