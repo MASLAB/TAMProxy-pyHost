@@ -229,7 +229,7 @@ class PacketParser(object):
                             c.serial_errors[new_byte].msg))
                     else:
                         self.raise_error_flag("{}: {}".format(
-                            c.serial_errors.no_mans_land.msg, ord(new_byte)))
+                            c.serial_errors.N.msg, ord(new_byte)))
         return self.raw_packets
 
     def process_byte(self, byte):
