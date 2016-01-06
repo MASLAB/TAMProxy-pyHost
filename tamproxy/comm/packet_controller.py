@@ -185,7 +185,7 @@ class PacketController(Process):
                     print "[SerialController] Giving up, hit maximum serial retries"
                     return
                 else:
-                    print e
+                    print "[SerialController] {}: {}".format(e.__class__.__name__, e)
                     print ("[SerialController] ",
                           "Retrying connection in 1 second, "
                           "{} tries left".format(i))
