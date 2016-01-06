@@ -51,8 +51,11 @@ class TAMProxy(object):
                      continuous=False, weight=1, remove=False):
         if not callback: callback = self.empty_callback
         if device_id is not None: 
-            self.q.put(((device_id, payload, continuous, weight, remove),
-                        callback))
+            try: 
+                self.q.put_nowait(((device_id, payload, continuous, weight, remove),
+                            callback))
+            except Full:
+                print "Packet queue is full, can't send packets fast enough"
             return True
         else: return False
 

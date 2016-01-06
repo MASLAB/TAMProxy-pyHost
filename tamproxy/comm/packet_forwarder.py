@@ -10,7 +10,7 @@ class PacketForwarder(Thread):
     def __init__(self, reset_callback=None):
         super(PacketForwarder, self).__init__()
         self._stop = Event()
-        self.packets_received = 0 # float cuz this can get big
+        self.packets_received = 0
         self.sending_queue = Queue()
         self.callback_dict = dict()
         self.reset_callback = reset_callback
@@ -27,7 +27,7 @@ class PacketForwarder(Thread):
 
     def forward_requests(self):
         try:
-            packet, callback = self.sending_queue.get(block=False)
+            packet, callback = self.sending_queue.get_nowait()
             self.callback_dict[packet[:2]] = callback
             self.pipe.send(packet)
             self.sending_queue.task_done()
