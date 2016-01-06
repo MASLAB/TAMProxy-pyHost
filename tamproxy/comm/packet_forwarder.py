@@ -9,7 +9,7 @@ class PacketForwarder(Thread):
 
     def __init__(self, reset_callback=None):
         super(PacketForwarder, self).__init__()
-        self._stop = Event()
+        self.__stop = Event()
         self.packets_received = 0 # float cuz this can get big
         self.sending_queue = Queue()
         self.callback_dict = dict()
@@ -18,7 +18,7 @@ class PacketForwarder(Thread):
         self.pipe = self.pc.pipe_outside
 
     def stop(self):
-        self._stop.set()
+        self.__stop.set()
 
     def empty_queue(self):
         while not self.sending_queue.empty():
@@ -51,7 +51,7 @@ class PacketForwarder(Thread):
 
     def run(self):
         self.pc.start()
-        while not self._stop.isSet():
+        while not self.__stop.isSet():
             self.forward_requests()
             self.callback_responses()
         # Kill the pc process if thread stopped
