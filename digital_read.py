@@ -5,8 +5,6 @@ from tamproxy.devices import DigitalInput
 
 class DigitalRead(SyncedSketch):
 
-    testpin_pin = 0
-
     def setup(self):
         self.testpins = []
         for i in xrange(34):
