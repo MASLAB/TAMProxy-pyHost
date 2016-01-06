@@ -75,8 +75,8 @@ class TAMPSerial(serial.Serial):
                 self.write(self.hello_packet)
             sleep(c.host.prime_sleep)
             n_received = ((self.in_waiting - received)
-                         / self.hello_response_length)
             print "Received", n_received, "new HELLO responses"
+                          // self.hello_response_length)
             if n_received == self.PRIME_COUNT:
                 self.read(self.in_waiting)
                 print "Serial connection established"
