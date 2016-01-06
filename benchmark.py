@@ -8,7 +8,7 @@ from tamproxy.devices import DigitalInput
 # (packets per second) to control loop frequency (loops per second)
 
 class Benchmark(Sketch):
-#class benchmark(SyncedSketch):
+#class Benchmark(SyncedSketch):
 
     testpin_pin = 0
 
@@ -29,5 +29,5 @@ class Benchmark(Sketch):
 
 if __name__ == "__main__":
     sketch = Benchmark(0.001)
-    #sketch = benchmark(1, -0.00001, 100)
+    #sketch = Benchmark(1, -0.00001, 100)
     sketch.run()

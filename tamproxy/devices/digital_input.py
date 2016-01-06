@@ -13,7 +13,7 @@ class DigitalInput(Device):
         self.prev_val = None
         super(DigitalInput, self).__init__(tamproxy)
         while self.id is None: pass
-        self.start_continuous()
+        if continuous: self.start_continuous()
 
     @property
     def add_payload(self):
