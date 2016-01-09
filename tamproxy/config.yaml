@@ -81,6 +81,8 @@ devices:
         write_code:     W       # 0x57
     encoder:
         code:           E       # 0x45
+        read_code:      R       # 0x52
+        write_code:     W       # 0x57
     motor:
         code:           M       # 0x4d
         write_code:     W       # 0x57
