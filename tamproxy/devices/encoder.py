@@ -1,6 +1,8 @@
 from .device import Device
 from .. import config as c
 
+import ctypes
+
 class Encoder(Device):
 
     DEVICE_CODE =   c.devices.encoder.code
@@ -40,9 +42,12 @@ class Encoder(Device):
                              continuous=True, weight=1, remove=True)
 
     def _handle_update(self, request, response):
-        self.val = (
+        new_val = (
             (ord(response[0])<<24) |
             (ord(response[1])<<16) |
             (ord(response[2])<<8) |
             ord(response[3])
         )
+
+        # this deals with unsigned overflow
+        self.val += ctypes.c_int32(new_val - self.val).value
