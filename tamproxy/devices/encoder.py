@@ -7,12 +7,13 @@ class Encoder(Device):
     WRITE_CODE =    c.devices.encoder.write_code
     READ_CODE  =    c.devices.encoder.read_code
 
-    def __init__(self, tamproxy, pin_a, pin_b):
+    def __init__(self, tamproxy, pin_a, pin_b, continuous=True):
         self.pin_a = pin_a
         self.pin_b = pin_b
         self.val = 0
         super(Encoder, self).__init__(tamproxy)
         while self.id is None: pass
+        if continuous: self.start_continuous()
 
     @property
     def add_payload(self):
