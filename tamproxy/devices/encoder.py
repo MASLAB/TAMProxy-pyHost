@@ -10,6 +10,7 @@ class Encoder(Device):
     def __init__(self, tamproxy, pin_a, pin_b):
         self.pin_a = pin_a
         self.pin_b = pin_b
+        self.val = 0
         super(Encoder, self).__init__(tamproxy)
         while self.id is None: pass
 
