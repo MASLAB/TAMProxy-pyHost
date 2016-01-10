@@ -90,6 +90,7 @@ devices:
         code:           m       # 0x6d
     servo:
         code:           S       # 0x53
+        write_code:     W       # 0x57
     stepper:
         code:           s       # 0x73
     gyro:
