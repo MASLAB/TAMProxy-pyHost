@@ -28,7 +28,7 @@ class PacketController(Process):
     DEVICELIST_CODE =       c.devices.devicelist.code
     HELLO_PAYLOAD =         c.devices.devicelist.hello_code
 
-    compare_pids = lambda self, a,b: np.int16(b) - np.int16(a)
+    compare_pids = lambda self, a,b: np.int16(b - a)
 
     def __init__(self):
         self._stop = Event()
@@ -38,7 +38,6 @@ class PacketController(Process):
         self.continuous_requests = set()
         self.weighted_tdma_list = []
         self.reset()
-        np.seterr(over="ignore")
         super(PacketController, self).__init__()
 
     def reset(self, clear_pipe=False):
