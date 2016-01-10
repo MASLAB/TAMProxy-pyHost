@@ -94,6 +94,7 @@ devices:
         code:           s       # 0x73
     gyro:
         code:           G       # 0x47
+        read_code:      R       # 0x52
     ultrasonic:
         code:           U       # 0x55
     ir:

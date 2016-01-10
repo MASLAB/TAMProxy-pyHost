@@ -4,3 +4,4 @@ from .analog_input import AnalogInput
 from .analog_output import AnalogOutput
 from .motor import Motor
 from .encoder import Encoder
+from .gyro import Gyro
