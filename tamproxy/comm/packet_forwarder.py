@@ -24,15 +24,28 @@ class PacketForwarder(Thread):
             except Empty: pass
 
     def forward_requests(self):
+        """ Takes requests from the queue, and forwards them through the pipe """
         try:
             packet, callback = self.sending_queue.get_nowait()
-            self.callback_dict[packet[:2]] = callback
-            self.pipe.send(packet)
-            self.sending_queue.task_done()
         except Empty:
-            pass
+            return
+
+        # packet[:2] is the device id and payload
+        self.callback_dict[packet[:2]] = callback
+        self.pipe.send(packet)
+        self.sending_queue.task_done()
 
     def callback_responses(self):
+        """
+        Reads responses from the pipe, and fires the appropiate callbacks,
+        until the pipe is empty
+
+        Special cases:
+        - a fake reset packet emitted by the background process causes a queue flush
+        - error packets are logged, and then dropped
+        - packets without a request are not handled
+
+        """
         while self.pipe.poll():
             request, response = self.pipe.recv()
             self.packets_received += 1

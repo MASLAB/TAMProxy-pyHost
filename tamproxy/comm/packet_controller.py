@@ -47,8 +47,8 @@ class PacketController(Process):
         self.srtt = None
         self.rttdev = None
         self.timeout = self.INITIAL_TIMEOUT
-        self.en_route = dict()
-        self.receiving_buffer = dict()
+        self.en_route = dict()          # pid -> packet, time_sent
+        self.receiving_buffer = dict()  # pid -> sent_packet, payload
         self.next_send_pid = np.uint16(0)
         self.next_recv_pid = np.uint16(0)
         self.weighted_tdma_pos = 0

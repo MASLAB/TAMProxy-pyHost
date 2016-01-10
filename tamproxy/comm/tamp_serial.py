@@ -5,6 +5,11 @@ from time import sleep
 from .. import config as c
 
 class TAMPSerial(serial.Serial):
+    """
+    A normal serial interface, with the added features of:
+    - Auto-detection of port
+    - A simple "priming" handshake
+    """
 
     PORT =          c.host.port
     BAUD_RATE =     c.firmware.baud_rate
