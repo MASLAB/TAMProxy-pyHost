@@ -9,7 +9,9 @@ class TAMProxy(object):
     CLEAR_CODE =        c.devices.devicelist.clear_code
 
     def __init__(self):
+        # used to reinitialize devices on a restart
         self.recovery_data = dict()
+
         self.start()
 
     def start(self):
@@ -56,6 +58,9 @@ class TAMProxy(object):
 
     def send_request(self, device_id, payload, callback=None, 
                      continuous=False, weight=1, remove=False):
+        """
+        Make a request to the underlying PacketForwarder
+        """
         if not callback: callback = self.empty_callback
         if device_id is not None: 
             try: 
