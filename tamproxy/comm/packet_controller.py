@@ -69,6 +69,7 @@ class PacketController(Process):
         return pack(pack_format, self.START_BYTE, pid, length, dest, payload)
 
     def get_new_packet_to_send(self):
+        # process new requests
         while self.pipe_inside.poll():
             packet_request = PacketRequest(*self.pipe_inside.recv())
             if packet_request.is_continuous:
@@ -80,19 +81,23 @@ class PacketController(Process):
                     self.continuous_requests.discard(packet_request[:2])
             else:
                 return packet_request[:2]
-        while True:
-            if self.weighted_tdma_list:
-                key = self.weighted_tdma_list[self.weighted_tdma_pos]
-                if key in self.continuous_requests:
+
+        # resend exiting continuous_requests
+        while self.weighted_tdma_list:
+            key = self.weighted_tdma_list[self.weighted_tdma_pos]
+            if key in self.continuous_requests:
+                self.weighted_tdma_pos += 1
+                self.weighted_tdma_pos %= len(self.weighted_tdma_list)
+                return key
+            else:
+                # this item was removed
+                self.weighted_tdma_list.pop(self.weighted_tdma_pos)
+                if self.weighted_tdma_list:
                     self.weighted_tdma_pos += 1
                     self.weighted_tdma_pos %= len(self.weighted_tdma_list)
-                    return key
-                else:
-                    self.weighted_tdma_list.pop(self.weighted_tdma_pos)
-                    if self.weighted_tdma_list:
-                        self.weighted_tdma_pos += 1
-                        self.weighted_tdma_pos %= len(self.weighted_tdma_list)
-            else: return None
+
+        # nothing else to do
+        return None
 
     def slide_window(self):
         if self.ENABLE_TIMEOUT:
@@ -104,6 +109,8 @@ class PacketController(Process):
                     self.en_route[pid] = (packet, time())
                     self.transmit(pid, *packet[:2])
                     return
+
+        # transmit the next packet
         if len(self.en_route) < self.WINDOW_SIZE:
             packet = self.get_new_packet_to_send()
             if packet:
@@ -152,6 +159,10 @@ class PacketController(Process):
         else: self.pipe_inside.send((sent_packet, payload))
 
     def calc_timeout(self, time_sent):
+        """
+        Update the timeout value to use for future packets, by combining the
+        smoothed round trip time, and the deviation in the round trip time
+        """
         rtt = time() - time_sent
         if self.srtt:
             self.srtt = rtt*self.SRTT_ALPHA + (1-self.SRTT_ALPHA)*self.srtt
