@@ -41,8 +41,8 @@ class PacketController(Process):
         super(PacketController, self).__init__()
 
     def reset(self, clear_pipe=False):
-        self.srtt = None
-        self.rttdev = None
+        self.rtt_smoothed = None
+        self.rtt_deviation = None
         self.timeout = self.INITIAL_TIMEOUT
         self.en_route = dict()          # pid -> packet, time_sent
         self.receiving_buffer = dict()  # pid -> sent_packet, payload
@@ -101,11 +101,12 @@ class PacketController(Process):
 
     def slide_window(self):
         if self.ENABLE_TIMEOUT:
+            # resend all en_route packets that have timed out
             for pid in self.en_route:
                 packet, time_sent = self.en_route[pid]
                 dt = time() - time_sent
                 if dt > self.timeout:
-                    print dt, self.timeout, self.srtt, self.rttdev
+                    print dt, self.timeout, self.rtt_smoothed, self.rtt_deviation
                     self.en_route[pid] = (packet, time())
                     self.transmit(pid, *packet[:2])
                     return
@@ -134,8 +135,8 @@ class PacketController(Process):
     def receive(self):
         raw_packets = self.packet_parser.receive()
         packets = [self.decode_raw_packet(p) for p in raw_packets]
-        for (pid, payload) in packets:
-            if (payload != self.HELLO_PAYLOAD):
+        for pid, payload in packets:
+            if payload != self.HELLO_PAYLOAD:
                 self.process_packet(pid, payload)
         return len(packets)
 
@@ -146,7 +147,7 @@ class PacketController(Process):
             return
         sent_packet, time_sent = self.en_route.pop(pid)
         if self.ENABLE_TIMEOUT:
-            self.calc_timeout(time_sent)
+            self.update_timeout(time_sent)
             if self.next_recv_pid == pid:
                 self.pipe_inside.send((sent_packet, payload))
                 i = 1
@@ -158,20 +159,25 @@ class PacketController(Process):
                 self.receiving_buffer[pid] = (sent_packet, payload)
         else: self.pipe_inside.send((sent_packet, payload))
 
-    def calc_timeout(self, time_sent):
+    def update_timeout(self, time_sent):
         """
         Update the timeout value to use for future packets, by combining the
         smoothed round trip time, and the deviation in the round trip time
         """
         rtt = time() - time_sent
-        if self.srtt:
-            self.srtt = rtt*self.SRTT_ALPHA + (1-self.SRTT_ALPHA)*self.srtt
-        else: self.srtt = rtt
-        if self.rttdev:
-            self.rttdev = (abs(rtt-self.srtt)*self.RTTDEV_ALPHA
-                           + (1-self.RTTDEV_ALPHA)*self.rttdev)
-        else: self.rttdev = rtt
-        self.timeout = self.SRTT_GAIN*self.srtt + self.RTTDEV_GAIN*self.rttdev
+
+        if self.rtt_smoothed:
+            self.rtt_smoothed = rtt*self.SRTT_ALPHA + (1-self.SRTT_ALPHA)*self.rtt_smoothed
+        else:
+            self.rtt_smoothed = rtt
+
+        if self.rtt_deviation:
+            self.rtt_deviation = (abs(rtt-self.rtt_smoothed)*self.RTTDEV_ALPHA
+                           + (1-self.RTTDEV_ALPHA)*self.rtt_deviation)
+        else:
+            self.rtt_deviation = rtt
+
+        self.timeout = self.SRTT_GAIN*self.rtt_smoothed + self.RTTDEV_GAIN*self.rtt_deviation
 
     def stop(self):
         self._stop.set()
@@ -179,7 +185,7 @@ class PacketController(Process):
     def run(self):
         i = self.SERIAL_RETRIES
         while i >= 0:
-            try: 
+            try:
                 self.connect()
                 i = self.SERIAL_RETRIES
                 while not self._stop.is_set():
