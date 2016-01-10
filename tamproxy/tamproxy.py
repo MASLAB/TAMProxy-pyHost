@@ -24,6 +24,13 @@ class TAMProxy(object):
         self.pf.join()
         self.started = False
 
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *exc):
+        print "Stopping tamproxy"
+        self.stop()
+
     def handle_device_reset(self):
         self.clear_devices()
         for device_id, add_vals in self.recovery_data.iteritems():
