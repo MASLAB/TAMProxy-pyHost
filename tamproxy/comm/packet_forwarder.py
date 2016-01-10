@@ -1,5 +1,5 @@
 from threading import Thread, Event
-from Queue import Queue, Empty
+from Queue import Queue, Empty, Full
 from .packet_controller import PacketController
 from .. import config as c
 
@@ -21,7 +21,7 @@ class PacketForwarder(Thread):
     def enqueue(self, device_id, payload, callback,
                       continuous=False, weight=1, remove=False):
         try:
-            self.q.put_nowait((
+            self.sending_queue.put_nowait((
                 (device_id, payload, continuous, weight, remove), callback
             ))
         except Full:
