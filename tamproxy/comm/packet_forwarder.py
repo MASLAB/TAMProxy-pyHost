@@ -18,6 +18,15 @@ class PacketForwarder(Thread):
     def stop(self):
         self.__stop.set()
 
+    def enqueue(self, device_id, payload, callback,
+                      continuous=False, weight=1, remove=False):
+        try:
+            self.q.put_nowait((
+                (device_id, payload, continuous, weight, remove), callback
+            ))
+        except Full:
+            print "Packet queue is full, can't send packets fast enough"
+
     def empty_queue(self):
         while not self.sending_queue.empty():
             try: self.sending_queue.get(False)

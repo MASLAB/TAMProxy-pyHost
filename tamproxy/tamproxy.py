@@ -18,7 +18,6 @@ class TAMProxy(object):
         self.started = False
         self.pf = PacketForwarder(self.handle_device_reset)
         self.pf.start()
-        self.q = self.pf.sending_queue
         while not self.started: pass
 
     def stop(self):
@@ -40,21 +39,19 @@ class TAMProxy(object):
         if not self.started: self.started = True
 
     def add_device(self, add_payload, callback):
-        payload = self.ADD_CODE + add_payload
         self.send_request(self.DEVICELIST_CODE,
-                         payload,
-                         callback)
+                          self.ADD_CODE + add_payload,
+                          callback)
 
     def remove_device(self, device_id, callback):
-        payload = self.REMOVE_CODE + device_id
         self.send_request(self.DEVICELIST_CODE,
-                         payload,
-                         callback)
+                          self.REMOVE_CODE + device_id,
+                          callback)
 
     def clear_devices(self):
         self.send_request(self.DEVICELIST_CODE,
-                         self.CLEAR_CODE,
-                         self.empty_callback)
+                          self.CLEAR_CODE,
+                          self.empty_callback)
 
     def send_request(self, device_id, payload, callback=None, 
                      continuous=False, weight=1, remove=False):
@@ -63,11 +60,7 @@ class TAMProxy(object):
         """
         if not callback: callback = self.empty_callback
         if device_id is not None: 
-            try: 
-                self.q.put_nowait(((device_id, payload, continuous, weight, remove),
-                            callback))
-            except Full:
-                print "Packet queue is full, can't send packets fast enough"
+            self.pf.enqueue(device_id, payload, callback, continuous, weight, remove)
             return True
         else: return False
 
