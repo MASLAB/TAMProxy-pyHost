@@ -2,8 +2,6 @@ from serial import SerialException
 from multiprocessing import Process, Pipe, Event
 from collections import namedtuple
 from time import sleep, time
-from threading import Thread
-from Queue import Queue
 from struct import pack, unpack
 import numpy as np
 import logging
