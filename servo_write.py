@@ -1,9 +1,9 @@
 from tamproxy import Sketch, SyncedSketch, Timer
 from tamproxy.devices import Servo
 
-# Cycles a motor back and forth between -255 and 255 PWM every ~5 seconds
 
 class ServoWrite(Sketch):
+    """Cycles a servo back and forth between 1050us and 1950us pulse widths (most servos are 1000-2000)"""
 
     def setup(self):
         self.servo = Servo(self.tamp, 9)
