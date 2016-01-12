@@ -5,9 +5,11 @@ from time import sleep, time
 from struct import pack, unpack
 import numpy as np
 import logging
-import logging.config
+
 from .. import config as c
 from .tamp_serial import *
+
+logger = logging.getLogger('tamproxy.controller')
 
 class PacketController(Process):
 
@@ -106,7 +108,9 @@ class PacketController(Process):
                 packet, time_sent = self.en_route[pid]
                 dt = time() - time_sent
                 if dt > self.timeout:
-                    print dt, self.timeout, self.rtt_smoothed, self.rtt_deviation
+                    logger.debug("dt={}, timeout={}, rtt_smoothed={}, rtt_deviation={}"
+                        .format(self.timeout, self.rtt_smoothed, self.rtt_deviation)
+                    )
                     self.en_route[pid] = (packet, time())
                     self.transmit(pid, *packet[:2])
                     return
@@ -143,7 +147,7 @@ class PacketController(Process):
     def process_packet(self, pid, payload):
         self.packets_received += 1
         if pid not in self.en_route:
-            print "retransmitted packet received"
+            logger.warn("retransmitted packet received")
             return
         sent_packet, time_sent = self.en_route.pop(pid)
         if self.ENABLE_TIMEOUT:
@@ -186,7 +190,9 @@ class PacketController(Process):
         i = self.SERIAL_RETRIES
         while i >= 0:
             try:
+                logger.info('Connecting to the teensy')
                 self.connect()
+                logger.info('Connected!')
                 i = self.SERIAL_RETRIES
                 while not self._stop.is_set():
                     self.slide_window()
@@ -194,20 +200,18 @@ class PacketController(Process):
                 return
             except (IOError, SerialException,
                     SerialPortUnavailableException) as e:
+                logger.error(e)
                 i -= 1
                 if i == 0:
-                    print "[SerialController] Giving up, hit maximum serial retries"
+                    logger.critical('Giving up, hit maximum serial retries')
                     return
                 else:
-                    print "[SerialController] {}: {}".format(e.__class__.__name__, e)
-                    print ("[SerialController] ",
-                          "Retrying connection in 1 second, "
-                          "{} tries left".format(i))
+                    logger.warn("Retrying connection in 1 second, "
+                                "{} tries left".format(i))
                     sleep(self.SERIAL_RETRY_TIMEOUT)
                     continue
             except SerialPortEstablishException as e:
-                print e
-                print "[SerialController] Quitting process..."
+                logger.critical('Giving up - could not establish a connection')
                 return
             except KeyboardInterrupt:
                 return
@@ -260,7 +264,7 @@ class PacketParser(object):
             self.receive_buffer = []
 
     def raise_error_flag(self, msg):
-        print msg
+        logger.error(msg)
         self.error_flag = True
         self.receive_buffer = []
 
