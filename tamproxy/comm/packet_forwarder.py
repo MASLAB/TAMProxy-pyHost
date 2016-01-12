@@ -20,6 +20,7 @@ class PacketForwarder(Thread):
         self.pipe = self.pc.pipe_outside
 
     def stop(self):
+        logger.info('stop requested')
         self.__stop.set()
 
     def enqueue(self, device_id, payload, callback,
@@ -80,8 +81,12 @@ class PacketForwarder(Thread):
 
     def run(self):
         self.pc.start()
-        while not self.__stop.isSet():
+        while True:
             self.forward_requests()
             self.callback_responses()
+
+            # finish any pending packets before stopping
+            if self.__stop.isSet() and self.sending_queue.empty():
+                break
         # Kill the pc process if thread stopped
         self.pc.stop()

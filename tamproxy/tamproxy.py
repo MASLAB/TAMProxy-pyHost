@@ -26,6 +26,7 @@ class TAMProxy(object):
         while not self.started: pass
 
     def stop(self):
+        self.clear_devices()
         self.pf.stop()
         self.pf.join()
         self.started = False

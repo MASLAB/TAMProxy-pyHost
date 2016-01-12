@@ -184,6 +184,7 @@ class PacketController(Process):
         self.timeout = self.SRTT_GAIN*self.rtt_smoothed + self.RTTDEV_GAIN*self.rtt_deviation
 
     def stop(self):
+        logger.info('stop requested')
         self._stop.set()
 
     def run(self):
@@ -194,9 +195,12 @@ class PacketController(Process):
                 self.connect()
                 logger.info('Connected!')
                 i = self.SERIAL_RETRIES
-                while not self._stop.is_set():
+                while True:
                     self.slide_window()
                     self.receive()
+                    if self._stop.is_set() and not self.pipe_inside.poll():
+                        break
+                logger.info('stopped')
                 return
             except (IOError, SerialException,
                     SerialPortUnavailableException) as e:
