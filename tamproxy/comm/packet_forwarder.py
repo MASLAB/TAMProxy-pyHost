@@ -81,16 +81,21 @@ class PacketForwarder(Thread):
 
     def run(self):
         self.pc.start()
+        stopping = False
         while True:
             self.forward_requests()
             self.callback_responses()
 
             # finish any pending packets before stopping
-            if self.__stop.isSet() and self.sending_queue.empty():
-                logger.info('stopped')
-                self.pc.stop()
-                return
+            if self.__stop.isSet():
+                if not stopping and self.sending_queue.empty():
+                    self.pc.stop()
+                    stopping = True
 
-            if not self.pc.is_alive():
+                elif stopping and not self.pc.is_alive():
+                    logger.info('stopped')
+                    return
+
+            elif not self.pc.is_alive():
                 logger.critical('controller stopped unexpectedly')
                 return
