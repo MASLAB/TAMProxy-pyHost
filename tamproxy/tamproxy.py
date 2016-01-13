@@ -23,7 +23,9 @@ class TAMProxy(object):
         self.started = False
         self.pf = PacketForwarder(self.handle_device_reset)
         self.pf.start()
-        while not self.started: pass
+        while self.pf.is_alive() and not self.started: pass
+        if not self.started:
+            raise Exception('Forwarder exited before reset was completed')
 
     def stop(self):
         self.clear_devices()

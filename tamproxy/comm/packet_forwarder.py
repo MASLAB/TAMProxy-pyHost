@@ -87,6 +87,10 @@ class PacketForwarder(Thread):
 
             # finish any pending packets before stopping
             if self.__stop.isSet() and self.sending_queue.empty():
-                break
-        # Kill the pc process if thread stopped
-        self.pc.stop()
+                logger.info('stopped')
+                self.pc.stop()
+                return
+
+            if not self.pc.is_alive():
+                logger.critical('controller stopped unexpectedly')
+                return
