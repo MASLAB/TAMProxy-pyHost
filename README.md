@@ -52,7 +52,7 @@ Supported Devices
 - [ ] Ultrasonic Distance Sensor
 - [x] Short-range IR Distance Sensor (just an analog input)
 - [x] Ultra-short range IR Distance Sensor (just a digital input)
-- [ ] Color Sensor (I2C)
+- [x] Color Sensor (I2C)
 
 
 Dependencies
