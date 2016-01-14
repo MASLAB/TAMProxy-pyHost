@@ -11,7 +11,9 @@ from tamproxy.devices import Color
 class ColorRead(SyncedSketch):
 
     def setup(self):
-        self.color = Color(self.tamp)
+        self.color = Color(self.tamp,
+                           integrationTime=Color.INTEGRATION_TIME_101MS,
+                           gain=Color.GAIN_1X)
         self.timer = Timer()
 
     def loop(self):

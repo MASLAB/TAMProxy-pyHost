@@ -10,13 +10,35 @@ class Color(Device):
     DEVICE_CODE = c.devices.color.code
     READ_CODE   = c.devices.color.read_code
 
-    def __init__(self, tamproxy, continuous=True):
+    # Integration time options
+    INTEGRATION_TIME_2_4MS = 1
+    INTEGRATION_TIME_24MS = 2
+    INTEGRATION_TIME_50MS = 3
+    INTEGRATION_TIME_101MS = 4
+    INTEGRATION_TIME_154MS = 5
+    INTEGRATION_TIME_700MS = 6
+
+    # Gain options
+    GAIN_1X = 1
+    GAIN_4X = 2
+    GAIN_16X = 3
+    GAIN_60X = 4
+
+    def __init__(self, tamproxy,
+                 integrationTime=INTEGRATION_TIME_101MS,
+                 gain=GAIN_1X, continuous=True):
+        assert integrationTime >= 1 and integrationTime <= 6
+        assert gain >= 1 and gain <= 4
+        self.integrationTime = integrationTime
+        self.gain = gain
+        
         self.r = 0
         self.g = 0
         self.b = 0
         self.c = 0
         self.colorTemp = 0
         self.lux = 0
+        
         super(Color, self).__init__(tamproxy)
         while self.id is None: pass
         if continuous:
@@ -25,7 +47,7 @@ class Color(Device):
     @property
     def add_payload(self):
         # Note: Cannot have two color sensors, because there is only one I2C bus
-        return self.DEVICE_CODE
+        return self.DEVICE_CODE + chr(self.integrationTime) + chr(self.gain)
 
     def update(self):
         self.tamp.send_request(self.id, self.READ_CODE, self.handle_update)
