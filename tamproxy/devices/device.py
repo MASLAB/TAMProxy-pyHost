@@ -1,4 +1,4 @@
-from abc import ABCMeta, abstractproperty
+from abc import ABCMeta, abstractproperty, abstractmethod
 import logging
 
 from .. import TAMProxy
@@ -39,3 +39,26 @@ class Device(object):
             return "<{}, id={}>".format(self.__class__.__name__, self.id)
         else:
             return super(Device, self).__repr__()
+
+
+class ContinuousReadDevice(Device):
+    __metaclass__ = ABCMeta
+
+    def __init__(self, tamproxy, continuous=True):
+        super(ContinuousReadDevice, self).__init__(tamproxy)
+        if continuous: self.start_continuous()
+
+    def update(self):
+        self.tamp.send_request(self.id, self.READ_CODE, self._handle_update)
+
+    def start_continuous(self, weight=1):
+        self.tamp.send_request(self.id, self.READ_CODE, self._handle_update,
+                             continuous=True, weight=weight)
+
+    def stop_continuous(self):
+        self.tamp.send_request(self.id, self.READ_CODE, self.tamp.empty_callback,
+                             continuous=True, weight=1, remove=True)
+
+    @abstractmethod
+    def _handle_update(self):
+        raise NotImplementedError

@@ -1,8 +1,8 @@
-from .device import Device
+from .device import ContinuousReadDevice
 from .. import config as c
 import time
 
-class Gyro(Device):
+class Gyro(ContinuousReadDevice):
 
     DEVICE_CODE = c.devices.gyro.code
     READ_CODE =   c.devices.gyro.read_code
@@ -13,11 +13,8 @@ class Gyro(Device):
         self.val = 0
         self.status = None
         self.integrate = integrate
-        super(Gyro, self).__init__(tamproxy)
-        while self.id is None: pass
-        if integrate:
-            self.time = None
-            self.start_continuous()
+        self.time = None
+        super(Gyro, self).__init__(tamproxy, integrate)
 
     def reset_integration(self, angle=0.0):
         self.val = angle
@@ -26,18 +23,7 @@ class Gyro(Device):
     def add_payload(self):
         return self.DEVICE_CODE + chr(self.sspin)
 
-    def update(self):
-        self.tamp.send_request(self.id, self.READ_CODE, self.handle_reading)
-
-    def start_continuous(self, weight=1):
-        self.tamp.send_request(self.id, self.READ_CODE, self.handle_reading,
-                               continuous=True, weight=weight)
-
-    def stop_continuous(self):
-        self.tamp.send_request(self.id, self.READ_CODE, self.tamp.empty_callback,
-                               continous=True, weight=1, remove=True)
-
-    def handle_reading(self, request, response):
+    def _handle_update(self, request, response):
         # print "handle_reading", response
         assert len(response) == 4
         # Assemble 32-bit returned value
