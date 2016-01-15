@@ -11,6 +11,9 @@ class Motor(Device):
         self.pwm_pin = pwm_pin
         super(Motor, self).__init__(tamproxy)
 
+    def __repr__(self):
+        return super(Motor, self).__repr__(self.dir_pin, self.pwm_pin)
+
     @property
     def add_payload(self):
         return self.DEVICE_CODE + chr(self.dir_pin) + chr(self.pwm_pin)

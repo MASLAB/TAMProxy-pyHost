@@ -13,6 +13,9 @@ class Servo(Device):
         self.uS_range = self.upper_uS - self.lower_uS
         super(Servo, self).__init__(tamproxy)
 
+    def __repr__(self):
+        return super(Servo, self).__repr__(self.pwm_pin)
+
     @property
     def add_payload(self):
         return self.DEVICE_CODE + chr(self.pwm_pin)
