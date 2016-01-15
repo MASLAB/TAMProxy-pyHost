@@ -1,7 +1,11 @@
 from threading import Thread, Event
 from Queue import Queue, Empty, Full
+import logging
+
 from .packet_controller import PacketController
 from .. import config as c
+
+logger = logging.getLogger('tamproxy.forwarder')
 
 class PacketForwarder(Thread):
 
@@ -25,7 +29,7 @@ class PacketForwarder(Thread):
                 (device_id, payload, continuous, weight, remove), callback
             ))
         except Full:
-            print "Packet queue is full, can't send packets fast enough"
+            logger.warn( "Packet queue is full, can't send packets fast enough")
 
     def empty_queue(self):
         while not self.sending_queue.empty():
@@ -58,16 +62,21 @@ class PacketForwarder(Thread):
         while self.pipe.poll():
             request, response = self.pipe.recv()
             self.packets_received += 1
-            if response == c.host.reset_msg: 
+            if response == c.host.reset_msg:
                 self.empty_queue()
                 if self.reset_callback: self.reset_callback()
             elif len(response) == 1 and response in c.responses:
                 if response == 'G': continue
-                print ("Firmware responded with an error: {} "
-                       "for the request {}").format(
-                            c.responses[response].msg, request)
+                logger.error(
+                    "Firmware responded with an error, {}, "
+                    "for the request {}".format(
+                        c.responses[response].msg, request
+                    )
+                )
             elif request in self.callback_dict:
                 self.callback_dict[request](request, response)
+            else:
+                logger.warn("Packet recieved with no callback")
 
     def run(self):
         self.pc.start()

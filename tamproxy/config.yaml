@@ -160,25 +160,24 @@ logging:
     handlers:
         console:
             class: logging.StreamHandler
-            level: WARNING
+            level: DEBUG
             formatter: simple
             stream: ext://sys.stdout
-        packet_verbose:
-            class: logging.handlers.RotatingFileHandler
-            level: DEBUG
-            formatter: simple
-            filename: logs/packet_verbose.log
-            backupCount: 5
-        packet:
-            class: logging.handlers.RotatingFileHandler
-            level: WARNING
-            formatter: simple
-            filename: logs/packet.log
-            backupCount: 5
+        # packet_verbose:
+        #     class: logging.handlers.RotatingFileHandler
+        #     level: DEBUG
+        #     formatter: simple
+        #     filename: logs/packet_verbose.log
+        #     backupCount: 5
+        # packet:
+        #     class: logging.handlers.RotatingFileHandler
+        #     level: WARNING
+        #     formatter: simple
+        #     filename: logs/packet.log
+        #     backupCount: 5
     loggers:
-        packet:
-            level: DEBUG
-            handlers: [console, packet, packet_verbose]
+        tamproxy:
+            handlers: [console]
             propagate: no
     root:
         level: DEBUG
