@@ -12,7 +12,6 @@ class Servo(Device):
         self.upper_uS = upper_uS
         self.uS_range = self.upper_uS - self.lower_uS
         super(Servo, self).__init__(tamproxy)
-        while self.id is None: pass
 
     @property
     def add_payload(self):
