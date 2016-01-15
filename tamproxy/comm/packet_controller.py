@@ -5,6 +5,7 @@ from time import sleep, time
 from struct import pack, unpack
 import numpy as np
 import logging
+import signal
 
 from .. import config as c
 from .tamp_serial import *
@@ -184,9 +185,13 @@ class PacketController(Process):
         self.timeout = self.SRTT_GAIN*self.rtt_smoothed + self.RTTDEV_GAIN*self.rtt_deviation
 
     def stop(self):
+        logger.info('stop requested')
         self._stop.set()
 
     def run(self):
+        # keyboard interrupt is handled by the main process
+        signal.signal(signal.SIGINT, signal.SIG_IGN)
+
         i = self.SERIAL_RETRIES
         while i >= 0:
             try:
@@ -194,10 +199,12 @@ class PacketController(Process):
                 self.connect()
                 logger.info('Connected!')
                 i = self.SERIAL_RETRIES
-                while not self._stop.is_set():
+                while True:
                     self.slide_window()
                     self.receive()
-                return
+                    if self._stop.is_set() and not self.pipe_inside.poll():
+                        logger.info('stopped')
+                        return
             except (IOError, SerialException,
                     SerialPortUnavailableException) as e:
                 logger.error(e)
@@ -212,8 +219,6 @@ class PacketController(Process):
                     continue
             except SerialPortEstablishException as e:
                 logger.critical('Giving up - could not establish a connection')
-                return
-            except KeyboardInterrupt:
                 return
 
 class PacketParser(object):
