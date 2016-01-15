@@ -3,22 +3,28 @@ from tamproxy.devices import Servo
 
 
 class ServoWrite(Sketch):
-    """Cycles a servo back and forth between 1050us and 1950us pulse widths (most servos are 1000-2000)"""
+    """Cycles a servo back and forth between 0 and 180 degrees. However,
+    these degrees are not guaranteed accurate, and each servo's range of valid
+    microsecond pulses is different"""
+
+    SERVO_PIN = 9
 
     def setup(self):
-        self.servo = Servo(self.tamp, 9)
-        self.servo.write(1050)
+        self.servo = Servo(self.tamp, self.SERVO_PIN)
+        self.servo.write(0)
+        self.servoval = 0
+        self.delta = 1
         self.timer = Timer()
         self.end = False
 
     def loop(self):
-        if (self.timer.millis() > 2000):
+        if (self.timer.millis() > 10):
             self.timer.reset()
-            if self.end:
-				self.servo.write(1050)
-            else:
-				self.servo.write(1950)
-            self.end = not self.end
+            if self.servoval >= 180: self.delta = -1
+            elif self.servoval <= 0: self.delta = 1
+            self.servoval += self.delta
+            print self.servoval
+            self.servo.write(abs(self.servoval))
 
 if __name__ == "__main__":
     sketch = ServoWrite()
