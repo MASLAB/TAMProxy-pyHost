@@ -15,6 +15,9 @@ class Encoder(ContinuousReadDevice):
         self.val = 0
         super(Encoder, self).__init__(tamproxy, continuous)
 
+    def __repr__(self):
+        return super(Encoder, self).__repr__(self.pin_a, self.pin_b)
+
     @property
     def add_payload(self):
         return self.DEVICE_CODE + chr(self.pin_a) + chr(self.pin_b)

@@ -16,6 +16,9 @@ class Gyro(ContinuousReadDevice):
         self.time = None
         super(Gyro, self).__init__(tamproxy, integrate)
 
+    def __repr__(self):
+        return super(Gyro, self).__repr__(self.sspin)
+
     def reset_integration(self, angle=0.0):
         self.val = angle
 

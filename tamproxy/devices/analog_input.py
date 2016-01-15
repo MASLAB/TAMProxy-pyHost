@@ -11,6 +11,9 @@ class AnalogInput(ContinuousReadDevice):
         self.val = 0
         super(AnalogInput, self).__init__(tamproxy, continuous)
 
+    def __repr__(self):
+        return super(AnalogInput, self).__repr__(self.pin)
+
     @property
     def add_payload(self):
         return self.DEVICE_CODE + chr(self.pin)

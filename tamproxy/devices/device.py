@@ -34,11 +34,18 @@ class Device(object):
         del self.tamp.recovery_add_packets[self.id]
         self.id = None
 
-    def __repr__(self):
+    def __repr__(self, *args, **kwargs):
+        kwargs = kwargs.items()
         if self.id:
-            return "<{}, id={}>".format(self.__class__.__name__, self.id)
-        else:
-            return super(Device, self).__repr__()
+            kwargs += [('id', self.id)]
+
+        arg_strs = [repr(arg) for arg in args]
+        arg_strs += ["{}={!r}".format(k, v) for k, v in kwargs]
+
+        return "{}(tamp, {})".format(
+            self.__class__.__name__,
+            ', '.join(arg_strs)
+        )
 
 
 class ContinuousReadDevice(Device):

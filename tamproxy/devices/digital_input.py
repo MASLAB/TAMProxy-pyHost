@@ -13,6 +13,9 @@ class DigitalInput(ContinuousReadDevice):
         self.prev_val = None
         super(DigitalInput, self).__init__(tamproxy, continuous)
 
+    def __repr__(self):
+        return super(DigitalInput, self).__repr__(self.pin)
+
     @property
     def add_payload(self):
         return self.DEVICE_CODE + chr(self.pin) + chr(self.pullup)

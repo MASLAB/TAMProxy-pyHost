@@ -10,6 +10,9 @@ class AnalogOutput(Device):
         self.pin = pin
         super (AnalogOutput, self).__init__(tamproxy)
 
+    def __repr__(self):
+        return super(AnalogOutput, self).__repr__(self.pin)
+
     @property
     def add_payload(self):
         return self.DEVICE_CODE + chr(self.pin)
