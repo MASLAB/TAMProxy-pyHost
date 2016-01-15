@@ -93,6 +93,9 @@ class PacketForwarder(Thread):
                     stopping = True
 
                 elif stopping and not self.pc.is_alive():
+                    # Clear out the pc pipe
+                    while self.pipe.poll():
+                        self.pipe.recv()
                     logger.info('stopped')
                     return
 
