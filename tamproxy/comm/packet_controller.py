@@ -202,7 +202,9 @@ class PacketController(Process):
                 while True:
                     self.slide_window()
                     self.receive()
-                    if self._stop.is_set() and not self.pipe_inside.poll():
+                    if (self._stop.is_set()
+                            and not self.pipe_inside.poll()
+                            and not self.en_route):
                         logger.info('stopped')
                         return
             except (IOError, SerialException,
