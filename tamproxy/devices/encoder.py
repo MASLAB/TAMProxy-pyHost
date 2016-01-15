@@ -1,9 +1,9 @@
-from .device import Device
+from .device import ContinuousReadDevice
 from .. import config as c
 
 import ctypes
 
-class Encoder(Device):
+class Encoder(ContinuousReadDevice):
 
     DEVICE_CODE =   c.devices.encoder.code
     WRITE_CODE =    c.devices.encoder.write_code
@@ -13,9 +13,7 @@ class Encoder(Device):
         self.pin_a = pin_a
         self.pin_b = pin_b
         self.val = 0
-        super(Encoder, self).__init__(tamproxy)
-        while self.id is None: pass
-        if continuous: self.start_continuous()
+        super(Encoder, self).__init__(tamproxy, continuous)
 
     @property
     def add_payload(self):
@@ -29,17 +27,6 @@ class Encoder(Device):
                                chr((int(value) >> 16) & 0xFF) +
                                chr((int(value) >> 8) & 0xFF) +
                                chr(int(value) & 0xFF))
-
-    def update(self):
-        self.tamp.send_request(self.id, self.READ_CODE, self._handle_update)
-
-    def start_continuous(self, weight=1):
-        self.tamp.send_request(self.id, self.READ_CODE, self._handle_update, 
-                             continuous=True, weight=weight)
-
-    def stop_continuous(self):
-        self.tamp.send_request(self.id, self.READ_CODE, self.tamp.empty_callback, 
-                             continuous=True, weight=1, remove=True)
 
     def _handle_update(self, request, response):
         new_val = (

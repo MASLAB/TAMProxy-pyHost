@@ -1,7 +1,7 @@
-from .device import Device
+from .device import ContinuousReadDevice
 from .. import config as c
 
-class DigitalInput(Device):
+class DigitalInput(ContinuousReadDevice):
 
     DEVICE_CODE =   c.devices.digital_input.code
     READ_CODE =     c.devices.digital_input.read_code
@@ -11,9 +11,7 @@ class DigitalInput(Device):
         self.pullup = pullup
         self.val = 0
         self.prev_val = None
-        super(DigitalInput, self).__init__(tamproxy)
-        while self.id is None: pass
-        if continuous: self.start_continuous()
+        super(DigitalInput, self).__init__(tamproxy, continuous)
 
     @property
     def add_payload(self):
@@ -29,16 +27,5 @@ class DigitalInput(Device):
             return True
         else: return False
 
-    def update(self):
-        self.tamp.send_request(self.id, self.READ_CODE, self.handle_pin_update)
-
-    def start_continuous(self, weight=1):
-        self.tamp.send_request(self.id, self.READ_CODE, self.handle_pin_update, 
-                             continuous=True, weight=weight)
-
-    def stop_continuous(self):
-        self.tamp.send_request(self.id, self.READ_CODE, self.tamp.empty_callback, 
-                             continuous=True, weight=1, remove=True)
-
-    def handle_pin_update(self, request, response):
+    def _handle_update(self, request, response):
         self.val = ord(response)
