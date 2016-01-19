@@ -36,7 +36,7 @@ class Device(object):
 
     def __repr__(self, *args, **kwargs):
         kwargs = kwargs.items()
-        if self.id:
+        if self.id is not None:
             kwargs += [('id', self.id)]
 
         arg_strs = [repr(arg) for arg in args]
