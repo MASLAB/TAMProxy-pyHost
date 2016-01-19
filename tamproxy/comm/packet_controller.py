@@ -109,8 +109,9 @@ class PacketController(Process):
                 packet, time_sent = self.en_route[pid]
                 dt = time() - time_sent
                 if dt > self.timeout:
-                    logger.debug("dt={}, timeout={}, rtt_smoothed={}, rtt_deviation={}"
-                        .format(self.timeout, self.rtt_smoothed, self.rtt_deviation)
+                    logger.debug("Packet timed out, will retransmit: "
+                        "pid={}, packet={}, timeout={}"
+                        .format(pid, packet, self.timeout)
                     )
                     self.en_route[pid] = (packet, time())
                     self.transmit(pid, *packet[:2])
@@ -148,7 +149,8 @@ class PacketController(Process):
     def process_packet(self, pid, payload):
         self.packets_received += 1
         if pid not in self.en_route:
-            logger.warn("retransmitted packet received")
+            logger.debug("Retransmitted packet received: pid={}, payload={}"
+                            .format(pid,payload))
             return
         sent_packet, time_sent = self.en_route.pop(pid)
         if self.ENABLE_TIMEOUT:
