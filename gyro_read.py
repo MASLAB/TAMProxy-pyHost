@@ -19,7 +19,7 @@ class GyroRead(SyncedSketch):
         if self.timer.millis() > 100:
             self.timer.reset()
             # Valid gyro status is [0,1], see datasheet on ST1:ST0 bits
-            print self.gyro.val, self.gyro.status
+            print "{:6f}, raw: 0x{:08x} = 0b{:032b}".format(self.gyro.val, self.gyro.raw, self.gyro.raw)
         # Janky autocalibration scheme
         if not self.calibrated and self.cali_timer.millis() > 3000:
             drift = self.gyro.val / (self.cali_timer.millis() / 1000.0)

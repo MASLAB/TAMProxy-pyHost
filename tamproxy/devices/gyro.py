@@ -15,6 +15,7 @@ class Gyro(ContinuousReadDevice):
         self.status = None
         self.integrate = integrate
         self.time = None
+        self.raw = 0
         super(Gyro, self).__init__(tamproxy, integrate)
 
     def __repr__(self):
@@ -49,6 +50,8 @@ class Gyro(ContinuousReadDevice):
         # Assemble 32-bit returned value
         ret_word = ((ord(response[0])<<24) + (ord(response[1])<<16)
                     + (ord(response[2])<<8) + ord(response[3]))
+
+        self.raw = ret_word
         # Check status bits
         st0 = (ret_word >> 26) & 0x1
         st1 = (ret_word >> 27) & 0x1

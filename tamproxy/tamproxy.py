@@ -16,11 +16,11 @@ class TAMProxy(object):
     def __init__(self):
         # used to reinitialize devices on a restart
         self.recovery_data = dict()
-
+        self.started = False
         self.start()
 
     def start(self):
-        self.started = False
+        if self.started: return
         self.pf = PacketForwarder(self.handle_device_reset)
         self.pf.start()
         while self.pf.is_alive() and not self.started: pass
@@ -28,6 +28,7 @@ class TAMProxy(object):
             raise Exception('Forwarder exited before reset was completed')
 
     def stop(self):
+        self.pf.pc.set_continuous_enabled(False)
         self.clear_devices()
         self.pf.stop()
         self.pf.join()

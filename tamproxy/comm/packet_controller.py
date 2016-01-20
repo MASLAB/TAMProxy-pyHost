@@ -35,6 +35,7 @@ class PacketController(Process):
 
     def __init__(self):
         self._stop = Event()
+        self._continuous = Event()
         self.tserial = None
         self.packet_parser = None
         self.pipe_inside, self.pipe_outside = Pipe()
@@ -71,6 +72,14 @@ class PacketController(Process):
         length = len(payload) + 5
         return pack(pack_format, self.START_BYTE, pid, length, dest, payload)
 
+    def set_continuous_enabled(self, bool):
+        if bool: 
+            self._continuous.set()
+            logger.info("Enabled continuous requests")
+        else:
+            self._continuous.clear()
+            logger.info("Disabled continuous requests")
+
     def get_new_packet_to_send(self):
         # process new requests
         while self.pipe_inside.poll():
@@ -86,7 +95,7 @@ class PacketController(Process):
                 return packet_request[:2]
 
         # resend exiting continuous_requests
-        while self.weighted_tdma_list:
+        while self.weighted_tdma_list and self._continuous.is_set():
             key = self.weighted_tdma_list[self.weighted_tdma_pos]
             if key in self.continuous_requests:
                 self.weighted_tdma_pos += 1
@@ -109,8 +118,9 @@ class PacketController(Process):
                 packet, time_sent = self.en_route[pid]
                 dt = time() - time_sent
                 if dt > self.timeout:
-                    logger.debug("dt={}, timeout={}, rtt_smoothed={}, rtt_deviation={}"
-                        .format(self.timeout, self.rtt_smoothed, self.rtt_deviation)
+                    logger.debug("Packet timed out, will retransmit: "
+                        "pid={}, packet={}, timeout={}"
+                        .format(pid, packet, self.timeout)
                     )
                     self.en_route[pid] = (packet, time())
                     self.transmit(pid, *packet[:2])
@@ -148,7 +158,8 @@ class PacketController(Process):
     def process_packet(self, pid, payload):
         self.packets_received += 1
         if pid not in self.en_route:
-            logger.warn("retransmitted packet received")
+            logger.debug("Retransmitted packet received: pid={}, payload={}"
+                            .format(pid,payload))
             return
         sent_packet, time_sent = self.en_route.pop(pid)
         if self.ENABLE_TIMEOUT:

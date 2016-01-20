@@ -20,11 +20,26 @@ class Sketch(object):
     def loop(self):
         raise NotImplementedError
 
-    def start(self):
+    def pre_setup(self):
         self.start_time = time()
-        self.iterations = 0 # float cuz this can get big
-        if not self.tamp.started: self.tamp.start()
+        self.iterations = 0
+        self.tamp.start()
         self.stopped = False
+
+    def post_setup(self):
+        self.tamp.pf.pc.set_continuous_enabled(True)
+        print "Entering Loop"
+
+    def pre_loop(self):
+        pass
+
+    def post_loop(self):
+        self.iterations += 1
+        sleep(self.sleep_duration)
+
+    def on_exit(self):
+        self.tamp.stop()
+        print "Sketch finished running"
 
     def stop(self):
         self.stopped = True
@@ -42,18 +57,17 @@ class Sketch(object):
         return self.iterations / self.elapsed
 
     def run(self):
-        self.start()
         try:
+            self.pre_setup()
             self.setup()
-            print "Entered loop"
+            self.post_setup()
             while not self.stopped:
+                self.pre_loop()
                 self.loop()
-                self.iterations += 1
-                sleep(self.sleep_duration)
+                self.post_loop()
         except KeyboardInterrupt:
             self.stop() # as if the sketch had called it
-        self.tamp.stop()
-        print "Sketch finished running"
+        self.on_exit()
 
 class SyncedSketch(Sketch):
 
@@ -64,9 +78,14 @@ class SyncedSketch(Sketch):
         self.interval = interval
         super(SyncedSketch, self).__init__(sleep_interval)
 
-    def start(self):
+    def pre_setup(self):
         self.last_packets_received = 0
-        super(SyncedSketch, self).start()
+        super(SyncedSketch, self).pre_setup()
+
+    def post_loop(self):
+        super(SyncedSketch, self).post_loop()
+        if not self.iterations % self.interval:
+            self.adjust_sleeptime()
 
     def adjust_sleeptime(self):
         new_packets_received = self.tamp.pf.packets_received
@@ -74,21 +93,4 @@ class SyncedSketch(Sketch):
         error = float(dp)/self.interval - self.sync_ratio
         self.sleep_duration = min(max(self.sleep_duration + 
                                       error * self.sync_gain, 0), .1)
-        #print error/self.sync_ratio, self.sleep_duration
         self.last_packets_received = new_packets_received
-
-    def run(self):
-        self.start()
-        try:
-            self.setup()
-            print "Entered loop"
-            while not self.stopped:
-                self.loop()
-                self.iterations += 1
-                if not self.iterations % self.interval:
-                    self.adjust_sleeptime()
-                sleep(self.sleep_duration)
-        except KeyboardInterrupt:
-            self.stop()
-        self.tamp.stop()
-        print "\nSketch finished running"

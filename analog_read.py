@@ -1,7 +1,7 @@
 from tamproxy import Sketch, SyncedSketch, Timer
 from tamproxy.devices import AnalogInput
 
-# Detects changes in allllll the pins!
+# Reads the analog voltage at one of the analog pins
 
 class AnalogRead(SyncedSketch):
 
