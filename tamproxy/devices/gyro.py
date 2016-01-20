@@ -4,8 +4,9 @@ import time
 
 class Gyro(ContinuousReadDevice):
 
-    DEVICE_CODE = c.devices.gyro.code
-    READ_CODE =   c.devices.gyro.read_code
+    DEVICE_CODE    = c.devices.gyro.code
+    READ_CODE      = c.devices.gyro.read_code
+    CALIBRATE_CODE = c.devices.gyro.calibrate_code
     VALID_READ_STATUS = [0,1]
 
     def __init__(self, tamproxy, sspin, integrate=True):
@@ -23,12 +24,28 @@ class Gyro(ContinuousReadDevice):
     def reset_integration(self, angle=0.0):
         self.val = angle
 
+    # Write a value [-6.4, 6.4] to set the deg/sec bias
+    def calibrate_bias(self, bias=0.0):
+        assert bias >= -6.4 and bias <= 6.4
+        bits = int(bias*80)
+        if bits < 0:
+            bits += 1024
+        self.tamp.send_request(self.id, self.CALIBRATE_CODE +
+                               chr((bits >> 8) & 0xff) + chr(bits & 0xff),
+                               self.handle_calibrate)
+
     @property
     def add_payload(self):
         return self.DEVICE_CODE + chr(self.sspin)
 
+    def handle_calibrate(self, request, response):
+        assert len(response) == 4
+        # Assemble 32-bit returned value
+        ret_word = ((ord(response[0])<<24) + (ord(response[1])<<16)
+                    + (ord(response[2])<<8) + ord(response[3]))
+        pass
+    
     def _handle_update(self, request, response):
-        # print "handle_reading", response
         assert len(response) == 4
         # Assemble 32-bit returned value
         ret_word = ((ord(response[0])<<24) + (ord(response[1])<<16)
