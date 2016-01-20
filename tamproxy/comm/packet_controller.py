@@ -73,8 +73,12 @@ class PacketController(Process):
         return pack(pack_format, self.START_BYTE, pid, length, dest, payload)
 
     def set_continuous_enabled(self, bool):
-        if bool: self._continuous.set()
-        else: self._continuous.clear()
+        if bool: 
+            self._continuous.set()
+            logger.info("Enabled continuous requests")
+        else:
+            self._continuous.clear()
+            logger.info("Disabled continuous requests")
 
     def get_new_packet_to_send(self):
         # process new requests
