@@ -38,7 +38,6 @@ class Sketch(object):
         sleep(self.sleep_duration)
 
     def on_exit(self):
-        self.tamp.pf.pc.set_continuous_enabled(False)
         self.tamp.stop()
         print "Sketch finished running"
 

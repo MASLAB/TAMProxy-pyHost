@@ -28,6 +28,7 @@ class TAMProxy(object):
             raise Exception('Forwarder exited before reset was completed')
 
     def stop(self):
+        self.pf.pc.set_continuous_enabled(False)
         self.clear_devices()
         self.pf.stop()
         self.pf.join()
