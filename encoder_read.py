@@ -1,8 +1,7 @@
-
 from tamproxy import Sketch, SyncedSketch, Timer
 from tamproxy.devices import Encoder
 
-
+# Prints a quadrature encoder's position
 class EncoderRead(SyncedSketch):
 
     pins = 5, 6
