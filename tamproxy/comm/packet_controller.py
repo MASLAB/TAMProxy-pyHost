@@ -35,6 +35,7 @@ class PacketController(Process):
 
     def __init__(self):
         self._stop = Event()
+        self._continuous = Event()
         self.tserial = None
         self.packet_parser = None
         self.pipe_inside, self.pipe_outside = Pipe()
@@ -71,6 +72,10 @@ class PacketController(Process):
         length = len(payload) + 5
         return pack(pack_format, self.START_BYTE, pid, length, dest, payload)
 
+    def set_continuous_enabled(self, bool):
+        if bool: self._continuous.set()
+        else: self._continuous.clear()
+
     def get_new_packet_to_send(self):
         # process new requests
         while self.pipe_inside.poll():
@@ -86,7 +91,7 @@ class PacketController(Process):
                 return packet_request[:2]
 
         # resend exiting continuous_requests
-        while self.weighted_tdma_list:
+        while self.weighted_tdma_list and self._continuous.is_set():
             key = self.weighted_tdma_list[self.weighted_tdma_pos]
             if key in self.continuous_requests:
                 self.weighted_tdma_pos += 1

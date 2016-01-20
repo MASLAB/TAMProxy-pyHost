@@ -45,6 +45,7 @@ class Sketch(object):
         self.start()
         try:
             self.setup()
+            self.tamp.pf.pc.set_continuous_enabled(True)
             print "Entered loop"
             while not self.stopped:
                 self.loop()
@@ -52,6 +53,7 @@ class Sketch(object):
                 sleep(self.sleep_duration)
         except KeyboardInterrupt:
             self.stop() # as if the sketch had called it
+        self.tamp.pf.pc.set_continuous_enabled(False)
         self.tamp.stop()
         print "Sketch finished running"
 
@@ -82,6 +84,7 @@ class SyncedSketch(Sketch):
         try:
             self.setup()
             print "Entered loop"
+            self.tamp.pf.pc.set_continuous_enabled(True)
             while not self.stopped:
                 self.loop()
                 self.iterations += 1
@@ -90,5 +93,6 @@ class SyncedSketch(Sketch):
                 sleep(self.sleep_duration)
         except KeyboardInterrupt:
             self.stop()
+        self.tamp.pf.pc.set_continuous_enabled(False)
         self.tamp.stop()
         print "\nSketch finished running"

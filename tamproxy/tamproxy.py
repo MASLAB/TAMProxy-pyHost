@@ -16,7 +16,6 @@ class TAMProxy(object):
     def __init__(self):
         # used to reinitialize devices on a restart
         self.recovery_data = dict()
-
         self.start()
 
     def start(self):
