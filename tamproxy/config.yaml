@@ -96,6 +96,7 @@ devices:
     gyro:
         code:           G       # 0x47
         read_code:      R       # 0x52
+        calibrate_code: C       # 0x43
     ultrasonic:
         code:           U       # 0x55
     ir:

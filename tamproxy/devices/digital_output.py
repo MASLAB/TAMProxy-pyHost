@@ -11,7 +11,7 @@ class DigitalOutput(Device):
         super(DigitalOutput, self).__init__(tamproxy)
 
     def __repr__(self):
-        return super(DigitalOutput, self).__repr__(pin)
+        return super(DigitalOutput, self).__repr__(self.pin)
 
     @property
     def add_payload(self):
