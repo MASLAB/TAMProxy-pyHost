@@ -2,6 +2,7 @@
 .python-version
 # python junk
 *.pyc
+*.egg-info/
 # for generated config headers
 *.h
 # for logfiles               
