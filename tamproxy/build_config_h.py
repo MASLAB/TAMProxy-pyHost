@@ -19,14 +19,14 @@ with open('config.h', 'w') as o:
 // GENERAL
 """)
 
-    for key, value in c.firmware.iteritems():
+    for key, value in sorted(c.firmware.iteritems()):
         o.write('#define ')
         o.write(key.upper() + " ")
         o.write(str(value) + '\n')
 
     o.write("\n// DEVICES\n")
-    for key in c.devices:
-        for key2, value in c.devices[key].iteritems():
+    for key in sorted(c.devices):
+        for key2, value in sorted(c.devices[key].iteritems()):
             o.write('#define ')
             o.write(key.upper() + '_')
             o.write(key2.upper() + ' ')
@@ -36,20 +36,20 @@ with open('config.h', 'w') as o:
             o.write('\n')
 
     o.write("\n// PACKETS\n")
-    for key, value in c.packet.iteritems():
+    for key, value in sorted(c.packet.iteritems()):
         o.write('#define ')
         o.write("PACKET_" + key.upper() + " ")
         o.write(str(value) + '\n')
 
     o.write("\n// SERIAL ERRORS\n")
-    for key, value in c.serial_errors.iteritems():
+    for key, value in sorted(c.serial_errors.iteritems()):
         name = value['name']
         o.write('#define ')
         o.write(name.upper() + "_CODE ")
         o.write("'" + key + "'" + '\n')
 
     o.write("\n// GENERAL RESPONSES\n")
-    for key, value in c.responses.iteritems():
+    for key, value in sorted(c.responses.iteritems()):
         name = value['name']
         o.write('#define ')
         o.write(name.upper() + "_CODE ")
