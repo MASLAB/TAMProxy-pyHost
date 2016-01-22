@@ -62,7 +62,7 @@ class Color(Device):
 
     def handle_update(self, request, response):
         assert len(response) == 12
-        self.r = (ord(response[0])<8) + ord(response[1])
+        self.r = (ord(response[0])<<8) + ord(response[1])
         self.g = (ord(response[2])<<8) + ord(response[3])
         self.b = (ord(response[4])<<8) + ord(response[5])
         self.c = (ord(response[6])<<8) + ord(response[7])
