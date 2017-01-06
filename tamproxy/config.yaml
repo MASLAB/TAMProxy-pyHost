@@ -44,21 +44,42 @@ host:
         # which affects throughput. 
         # Setting it to 0 decreases throughput significantly
 
+boards:
+    TEENSY32: &teensy32
+        # GENERAL
+        num_pins:           34      # Used to reset all pins
+        baud_rate:          115200  # Doesn't actually matter for pure USB
+        adc_resolution:     16      # How many bits to read with the ADC
+        # PWM SETTINGS
+        # See https://www.pjrc.com/teensy/td_pulse.html for
+        # ideal frequencies at a certain resolution
+        pwm_resolution:     8       # 16 max
+        pwm0_frequency:     187500
+        pwm1_frequency:     187500
+        pwm2_frequency:     187500
+        ftm0pin:            5       # Shouldn't have to change this
+        ftm1pin:            3       # Shouldn't have to change this
+        ftm2pin:            25      # Shouldn't have to change this
+    TEENSY35: &teensy35
+        # GENERAL
+        num_pins:           58      # Used to reset all pins
+        baud_rate:          115200  # Doesn't actually matter for pure USB
+        adc_resolution:     16      # How many bits to read with the ADC
+        # PWM SETTINGS
+        # See https://www.pjrc.com/teensy/td_pulse.html for
+        # ideal frequencies at a certain resolution
+        pwm_resolution:     8       # 16 max
+        pwm0_frequency:     234375
+        pwm1_frequency:     234375
+        pwm2_frequency:     234375
+        pwm3_frequency:     234375
+        ftm0pin:            5       # Shouldn't have to change this
+        ftm1pin:            3       # Shouldn't have to change this
+        ftm2pin:            29      # Shouldn't have to change this
+        ftm3pin:            2       # Shouldn't have to change this
+
 firmware:
-    # GENERAL
-    num_pins:           34      # Used to reset all pins
-    baud_rate:          115200  # Doesn't actually matter for pure USB
-    adc_resolution:     16      # How many bits to read with the ADC
-    # PWM SETTINGS
-    # See https://www.pjrc.com/teensy/td_pulse.html for
-    # ideal frequencies at a certain resolution
-    pwm_resolution:     8       # 16 max
-    pwm0_frequency:     488.28
-    pwm1_frequency:     488.28
-    pwm2_frequency:     488.28
-    ftm0pin:            5       # Shouldn't have to change this
-    ftm1pin:            6       # Shouldn't have to change this
-    ftm2pin:            25      # Shouldn't have to change this
+    <<: *teensy35   # Change this to whichever board you're targeting
 
 devices:
     devicelist:
