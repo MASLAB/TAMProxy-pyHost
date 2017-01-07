@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='tamproxy',
-    version='0.0.5',
+    version='0.0.6',
 
     description='TAMProxy Python Host',
     url='https://github.com/mitchgu/TAMProxy-pyHost',
@@ -13,6 +13,7 @@ setup(
     ],
 
     keywords='maslab tamproxy',
-    packages=['tamproxy'],
+    packages=['tamproxy', 'tamproxy.comm', 'tamproxy.devices'],
+    package_data={'tamproxy': ['config.yaml']},
     install_requires=['numpy', 'pyserial>=3.0', 'PyYAML'],
 )
