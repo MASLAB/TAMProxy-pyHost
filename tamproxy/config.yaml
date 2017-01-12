@@ -125,6 +125,9 @@ devices:
     color:
         code:           C       # 0x43 (color sensor)
         read_code:      R       # 0x52
+    tof:
+        code:           T       # 0x54
+        read_code:      R       # 0x52
 
 packet:
     start_byte:         0xF0
