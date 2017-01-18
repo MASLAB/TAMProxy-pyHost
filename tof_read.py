@@ -11,8 +11,8 @@ from tamproxy.devices import TimeOfFlight
 class TimeOfFlightRead(SyncedSketch):
 
     # Set these to the digital inputs connected to each xshut pin
-    self.tof_pin = 20
-    self.tof2_pin = 21
+    tof_pin = 20
+    tof2_pin = 21
 
     def setup(self):
         # Add all ToFs
