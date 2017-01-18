@@ -7,3 +7,4 @@ from .encoder import Encoder
 from .gyro import Gyro
 from .servo import Servo
 from .color import Color
+from .tof import TimeOfFlight
