@@ -1,8 +1,14 @@
 import logging
+import sys
+from multiprocessing import active_children
 
 from .comm import PacketForwarder
 from . import config as c
 
+def excepthook(exctype, value, traceback):
+    for p in active_children():
+       p.terminate()
+    sys.__excepthook__(exctype, value, traceback)
 
 logger = logging.getLogger('tamproxy')
 
@@ -15,6 +21,7 @@ class TAMProxy(object):
 
     def __init__(self):
         # used to reinitialize devices on a restart
+        sys.excepthook = excepthook
         self.recovery_data = dict()
         self.started = False
         self.start()
