@@ -1,6 +1,13 @@
 from abc import ABCMeta, abstractmethod
 from tamproxy import TAMProxy
 from time import sleep, time
+try:
+    import rospy
+    from std_msgs.msg import String
+    rospy_installed = True
+except ImportError:
+    rospy_installed = False
+
 from . import config as c
 
 class Sketch(object):
@@ -94,3 +101,37 @@ class SyncedSketch(Sketch):
         self.sleep_duration = min(max(self.sleep_duration + 
                                       error * self.sync_gain, 0), .1)
         self.last_packets_received = new_packets_received
+
+
+if rospy_installed:
+    class ROSSketch(Sketch):
+
+        def __init__(self, rate=100, node_name="teensy", pub_topic="tamproxy"):
+            super(ROSSketch, self).__init__()
+            rospy.init_node(node_name, anonymous=True)
+            self.pub = rospy.Publisher(pub_topic, String, queue_size=10)
+            self.rate = rospy.Rate(rate)
+
+        def post_loop(self):
+            try:
+                self.iterations += 1
+                self.rate.sleep()
+                # Just some diagnostic info
+                self.pub.publish("Throughput: {}, Frequency:{}".format(self.throughput, self.frequency))
+                # ensure that we handle the ROS node lifecycle correctly
+                if rospy.is_shutdown():
+                    print("ROS shutdown")
+                    self.stop()
+            except rospy.exceptions.ROSException:
+                self.stop()
+
+        def run(self):
+            # Let ROS catch KeyboardInterrupts
+            self.pre_setup()
+            self.setup()
+            self.post_setup()
+            while not self.stopped:
+                self.pre_loop()
+                self.loop()
+                self.post_loop()
+            self.on_exit()
