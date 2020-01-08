@@ -15,5 +15,5 @@ setup(
     keywords='maslab tamproxy',
     packages=['tamproxy', 'tamproxy.comm', 'tamproxy.devices'],
     package_data={'tamproxy': ['config.yaml']},
-    install_requires=['numpy', 'pyserial>=3.0', 'PyYAML'],
+    install_requires=['numpy==1.13.3', 'pyserial>=3.0', 'PyYAML'],
 )
