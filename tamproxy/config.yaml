@@ -3,10 +3,10 @@ host:
     # fill out port to disable automatic scan
     port:                   '/dev/ttyACM0'
     window_size:            8
-        # Number of packets that can be dispatched and unacklowledged at 
+        # Number of packets that can be dispatched and unacklowledged at
         # any point in time. Generally should be increased until increasing
         # it more doesn't increase the throughput much.
-    enable_timeout:         False 
+    enable_timeout:         False
         # Whether to enable detection of lost packets, retransmitting them if
         # necessary. Since USB already has CRC checks that ensure reliability,
         # this typically isn't needed and takes a very small hit on throughput
@@ -37,11 +37,11 @@ host:
     reset_msg:              RESET
         # The packet controller sends this if the device just connected
         # This is forwarded to the microcontroller, which then sends packets
-        # telling the firmware to clear (re)add its devices. 
+        # telling the firmware to clear (re)add its devices.
     default_sleep_duration: 0.00002
         # The default sleep time for the main thread between loops
         # The higher this is, the more time the packet_forwarder gets,
-        # which affects throughput. 
+        # which affects throughput.
         # Setting it to 0 decreases throughput significantly
 
 boards:
@@ -122,6 +122,9 @@ devices:
         code:           U       # 0x55
     ir:
         code:           I       # 0x49
+    imu:
+        code:           i      # 0x69
+        read_code:      R      # 0x52
     color:
         code:           C       # 0x43 (color sensor)
         read_code:      R       # 0x52
@@ -133,9 +136,9 @@ devices:
 packet:
     start_byte:         0xF0
         # dont ever use this in a packet body or other code
-    min_request_size:   6       
+    min_request_size:   6
         # 2 for the header, 1 for the dest, 1 for the payload
-    min_response_size:  5      
+    min_response_size:  5
         # 2 for the header, 1 for the payload
     max_size:           32
         # can be raised if desired at the expense of max throughput
@@ -144,26 +147,26 @@ packet:
 # These are all sent in no man's land (between packets)
 # becase an intact packet ID could not be read.
 serial_errors:
-    L: 
+    L:
         name: packet_oor
         msg:  Packet length was out of range
-    S: 
+    S:
         name: packet_short
         msg:  Packet was shorter than min_packet_size
-    N: 
+    N:
         name: no_mans_land
         msg:  A byte was sent outside packet start and end bytes
 
 # GENERAL RESPONSE CODES
 # These are common errors devices can reply with, and their meanings
 responses:
-    G: 
+    G:
         name: ok
         msg:  Its all G
-    D: 
+    D:
         name: dest_not_found
         msg:  The dest byte does not match a device
-    W: 
+    W:
         name: request_body_invalid
         msg:  The device does not know how to handle the request
     X:
@@ -172,7 +175,7 @@ responses:
     Y:
         name: device_oor
         msg:  Device index out of range (used in deletion)
-    Z: 
+    Z:
         name: device_invalid
         msg:  The device code given is invalid
 

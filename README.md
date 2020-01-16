@@ -9,21 +9,21 @@ TAMProxy (Totally A Microcontroller Proxy) is a microcontroller project offloads
 For example, running the classic Arduino blink sketch using the python host software is as simple as:
 
 	class Blink(Sketch):
-	
+
 	    def setup(self):
 	        self.led = DigitalOutput(self.tamp, 13)
 	        self.led_timer = Timer()
 	        self.led_state = False
-	
+
 	    def loop(self):
 	        if self.led_timer.millis() > 1000:
 	            self.led_timer.reset()
 	            self.led_state = not self.led_state
 	            self.led.write(self.led_state)
-	
+
     sketch = Blink()
     sketch.run()
-    
+
 With most similar libraries that control Arduino pins over USB, the communication is of a stop and wait nature. When the user sends a request, their program blocks while waiting for a response from the Arduino. With USB serial latency often in the millisecond range, this puts a big bottleneck on the user's code.
 
 TAMProxy does things differently by having a formalized variable-length packet structure and implementing a sliding window protocol on the host side to send them. TAMProxy can release several packets and simultaneously listen for the responses of packets sent earlier, which significantly increases throughput. All the communcations code runs in another process, so the user's sketch never blocks. In preliminary testing, throughput reaches around 17,000 packets per second at maximum when running PyPy 4.0.1 on a 2013 MBP.
@@ -53,6 +53,7 @@ Supported Devices
 - [x] Short-range IR Distance Sensor (just an analog input)
 - [x] Ultra-short range IR Distance Sensor (just a digital input)
 - [x] Color Sensor (I2C)
+- [x] Sparkfun MPU-9250 IMU breakout (I2C)
 
 
 Dependencies

@@ -8,3 +8,4 @@ from .gyro import Gyro
 from .servo import Servo
 from .color import Color
 from .tof import TimeOfFlight
+from .imu import Imu
