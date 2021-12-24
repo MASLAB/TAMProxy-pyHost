@@ -28,7 +28,7 @@ class TimeOfFlightRead(SyncedSketch):
     def loop(self):
         if self.timer.millis() > 100:
             self.timer.reset()
-            print self.tof.dist, "mm", "/", self.tof2.dist, "mm"
+            print(self.tof.dist, "mm", "/", self.tof2.dist, "mm")
 
 if __name__ == "__main__":
     sketch = TimeOfFlightRead(1, -0.00001, 100)

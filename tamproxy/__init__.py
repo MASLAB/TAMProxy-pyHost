@@ -8,7 +8,7 @@ except ImportError:
 
 def _init_logging():
     # do this in a function to avoid exposing globals
-    from utils import config as c
+    from .utils import config as c
     import logging.config
     logging.config.dictConfig(c.logging)
 

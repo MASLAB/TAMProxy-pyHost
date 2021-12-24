@@ -3,6 +3,7 @@ from tamproxy import TAMProxy
 from time import sleep, time
 try:
     import rclpy
+    from rclpy.node import Node
     from std_msgs.msg import String
     rclpy_installed = True
 except ImportError:
@@ -42,7 +43,7 @@ class Sketch(object):
 
     def post_setup(self):
         self.tamp.pf.pc.set_continuous_enabled(True)
-        print "Entering Loop"
+        print("Entering Loop")
 
     def pre_loop(self):
         pass
@@ -53,7 +54,7 @@ class Sketch(object):
 
     def on_exit(self):
         self.tamp.stop()
-        print "Sketch finished running"
+        print("Sketch finished running")
 
     def stop(self):
         self.stopped = True

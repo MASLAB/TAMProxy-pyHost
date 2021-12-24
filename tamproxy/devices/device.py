@@ -26,7 +26,7 @@ class Device(object):
         raise NotImplementedError
 
     def handle_add_response(self, request, response):
-        self.id = ord(response[1])
+        self.id = response[1]
         self.tamp.recovery_data[self.id] = (self.add_payload,
                                           self.handle_add_response)
 
@@ -35,12 +35,11 @@ class Device(object):
         self.id = None
 
     def __repr__(self, *args, **kwargs):
-        kwargs = kwargs.items()
         if self.id is not None:
-            kwargs += [('id', self.id)]
+            kwargs['id'] = self.id
 
         arg_strs = [repr(arg) for arg in args]
-        arg_strs += ["{}={!r}".format(k, v) for k, v in kwargs]
+        arg_strs += ["{}={!r}".format(k, v) for k, v in kwargs.items()]
 
         return "{}(tamp, {})".format(
             self.__class__.__name__,

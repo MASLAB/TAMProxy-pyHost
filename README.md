@@ -59,8 +59,8 @@ Supported Devices
 Dependencies
 ------------
 
-- Python 2.7.x or PyPy 4.x.x
-- PySerial 3.0 (2.x won't work, they changed some names)
+- Python 3.8.x
+- PySerial 3.x (2.x won't work, they changed some names)
 - NumPy (Use the PyPy version if you're using PyPy)
 - PyYAML (for configuration)
 
@@ -71,6 +71,6 @@ Quick Start
 
 - The `tamproxy/config.yaml` file has all the settings and constants and explanations for you to peruse/adjust before starting. Be warned that I've only tested on my OSX machine so far, so the best settings may vary significantly. I plan to document things better soon
 - Compile the TAMProxy-Firmware repo and upload it to your Teensy. Follow the directions on that repo's readme.
-- run `python blink.py` to try out the blink demo and go from there
+- run `python3 blink.py` to try out the blink demo and go from there
 
 Performance is greatly increased when using PyPy since the packet controlling is pretty CPU-bound and cpython is kinda slow. I recommend using pyenv to manage python installations if you want to go this route.

@@ -40,4 +40,4 @@ class TimeOfFlight(Device):
         self.dist = (ord(response[0])<<8) + ord(response[1])
 
     def handle_enable(self, request, response):
-        print "Enabled TOF", "{0:b}".format(ord(response[0]))
+        print("Enabled TOF", "{0:b}".format(ord(response[0])))

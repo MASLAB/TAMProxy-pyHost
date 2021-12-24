@@ -42,8 +42,8 @@ class TAMPSerial(serial.Serial):
             raise SerialPortUnavailableException("No suitable serial port detected")
         if len(ports) == 1: return ports[0]    
         else:
-            print "Enter the index of the desired serial port:"
-            for i,p in enumerate(ports): print i,p
+            print("Enter the index of the desired serial port:")
+            for i,p in enumerate(ports): print(i,p)
             return ports[int(raw_input())]
 
     def detect_ports(self):
@@ -78,9 +78,9 @@ class TAMPSerial(serial.Serial):
     def establish(self):
         received = 0
         logger.info("Establishing a serial connection")
-        for i in xrange(self.PRIME_TRIES):
+        for i in range(self.PRIME_TRIES):
             logger.debug("Sending {} HELLO packets".format(self.PRIME_COUNT))
-            for i in xrange(self.PRIME_COUNT): 
+            for i in range(self.PRIME_COUNT): 
                 self.write(self.hello_packet)
             time.sleep(c.host.prime_sleep)
             n_received = ((self.in_waiting - received)

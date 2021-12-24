@@ -38,7 +38,7 @@ class Imu(Device):
         self.tamp.send_request(self.id, self.READ_CODE, self.handle_update)
 
     def start_continuous(self, weight=1):
-        print "Starting continuous"
+        print("Starting continuous")
         self.tamp.send_request(self.id, self.READ_CODE, self.handle_update,
                                continuous=True, weight=weight)
 
