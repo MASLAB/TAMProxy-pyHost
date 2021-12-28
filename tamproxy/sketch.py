@@ -114,36 +114,16 @@ class SyncedSketch(Sketch):
 if rclpy_installed:
     class ROS2Sketch(Sketch, Node):
 
-        def __init__(self, rate=100, node_name="teensy", pub_topic="tamproxy"):
+        def __init__(self, rate=100, node_name="teensy"):
             super().__init__()                       # Calls Sketch.__init__()
             super(Sketch, self).__init__(node_name)  # Calls Node.__init__()
-            self.pub = self.create_publisher(String, pub_topic, queue_size=10)
-            # timer_period = 1.0 / rate  # seconds
-            # self.timer = self.create_timer(timer_period, self.timer_callback)
-            self.rate = self.create_rate(rate)
 
-        def post_loop(self):
-            try:
-                self.iterations += 1
-                self.rate.sleep()
-                # Just some diagnostic info
-                self.pub.publish("Throughput: {}, Frequency:{}".format(self.throughput, self.frequency))
-                # ensure that we handle the ROS node lifecycle correctly
-                if not rclpy.ok():
-                    print("ROS shutdown")
-                    self.stop()  # This should call Sketch.stop()
-            except rclpy.exceptions.ROSInterruptException:
-                self.stop()
-
-        def run(self):
-            # Let ROS catch KeyboardInterrupts
+        def run_setup(self):
             self.pre_setup()
             self.setup()
             self.post_setup()
-            while not self.stopped:
-                self.pre_loop()
-                self.loop()
-                self.post_loop()
+
+        def destroy(self):
             self.on_exit()
 
 if rospy_installed:
