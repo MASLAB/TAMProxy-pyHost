@@ -48,15 +48,15 @@ class Imu(Device):
 
     def handle_update(self, request, response):
         assert len(response) == 18
-        ax = us2s((ord(response[0])<<8) + ord(response[1]))
-        ay = us2s((ord(response[2])<<8) + ord(response[3]))
-        az = us2s((ord(response[4])<<8) + ord(response[5]))
-        gx = us2s((ord(response[6])<<8) + ord(response[7]))
-        gy = us2s((ord(response[8])<<8) + ord(response[9]))
-        gz = us2s((ord(response[10])<<8) + ord(response[11]))
-        mx = us2s((ord(response[12])<<8) + ord(response[13]))
-        my = us2s((ord(response[14])<<8) + ord(response[15]))
-        mz = us2s((ord(response[16])<<8) + ord(response[17]))
+        ax = us2s((response[0]<<8) + response[1])
+        ay = us2s((response[2]<<8) + response[3])
+        az = us2s((response[4]<<8) + response[5])
+        gx = us2s((response[6]<<8) + response[7])
+        gy = us2s((response[8]<<8) + response[9])
+        gz = us2s((response[10]<<8) + response[11])
+        mx = us2s((response[12]<<8) + response[13])
+        my = us2s((response[14]<<8) + response[15])
+        mz = us2s((response[16]<<8) + response[17])
 
         # scale values based on default sensor resolution
         self.ax = ax * self.DEFAULT_ARES

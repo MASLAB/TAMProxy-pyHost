@@ -19,4 +19,4 @@ class AnalogInput(ContinuousReadDevice):
         return self.DEVICE_CODE + chr(self.pin)
 
     def _handle_update(self, request, response):
-        self.val = (ord(response[0])<<8) + ord(response[1])
+        self.val = (response[0]<<8) + response[1]

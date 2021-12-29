@@ -33,10 +33,10 @@ class Encoder(ContinuousReadDevice):
 
     def _handle_update(self, request, response):
         new_val = (
-            (ord(response[0])<<24) |
-            (ord(response[1])<<16) |
-            (ord(response[2])<<8) |
-            ord(response[3])
+            (response[0]<<24) |
+            (response[1]<<16) |
+            (response[2]<<8) |
+            (response[3])
         )
 
         # this deals with unsigned overflow

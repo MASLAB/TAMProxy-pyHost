@@ -31,4 +31,4 @@ class DigitalInput(ContinuousReadDevice):
         else: return False
 
     def _handle_update(self, request, response):
-        self.val = ord(response)
+        self.val = response
