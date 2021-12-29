@@ -14,7 +14,7 @@ class AnalogRead(SyncedSketch):
     def loop(self):
         if self.timer.millis() > 100:
             self.timer.reset()
-            print self.testpin.val
+            print(self.testpin.val)
 
 if __name__ == "__main__":
     sketch = AnalogRead(1, -0.00001, 100)

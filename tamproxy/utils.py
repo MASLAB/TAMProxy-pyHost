@@ -32,7 +32,7 @@ target = os.path.dirname(os.path.realpath(__file__)) + "/config.yaml"
 with open(target, 'r') as config_file:
     config_yaml = config_file.read()
 
-config = dotdict(yaml.load(config_yaml))
+config = dotdict(yaml.full_load(config_yaml))
 
 class Timer(object):
 

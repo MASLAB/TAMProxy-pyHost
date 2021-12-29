@@ -2,6 +2,14 @@ from abc import ABCMeta, abstractmethod
 from tamproxy import TAMProxy
 from time import sleep, time
 try:
+    import rclpy
+    from rclpy.node import Node
+    from std_msgs.msg import String
+    rclpy_installed = True
+except ImportError:
+    rclpy_installed = False
+
+try:
     import rospy
     from std_msgs.msg import String
     rospy_installed = True
@@ -35,7 +43,7 @@ class Sketch(object):
 
     def post_setup(self):
         self.tamp.pf.pc.set_continuous_enabled(True)
-        print "Entering Loop"
+        print("Entering Loop")
 
     def pre_loop(self):
         pass
@@ -46,7 +54,7 @@ class Sketch(object):
 
     def on_exit(self):
         self.tamp.stop()
-        print "Sketch finished running"
+        print("Sketch finished running")
 
     def stop(self):
         self.stopped = True
@@ -102,6 +110,21 @@ class SyncedSketch(Sketch):
                                       error * self.sync_gain, 0), .1)
         self.last_packets_received = new_packets_received
 
+
+if rclpy_installed:
+    class ROS2Sketch(Sketch, Node):
+
+        def __init__(self, rate=100, node_name="teensy"):
+            super().__init__()                       # Calls Sketch.__init__()
+            super(Sketch, self).__init__(node_name)  # Calls Node.__init__()
+
+        def run_setup(self):
+            self.pre_setup()
+            self.setup()
+            self.post_setup()
+
+        def destroy(self):
+            self.on_exit()
 
 if rospy_installed:
     class ROSSketch(Sketch):

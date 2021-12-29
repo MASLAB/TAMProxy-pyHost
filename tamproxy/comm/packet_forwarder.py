@@ -1,5 +1,5 @@
 from threading import Thread, Event
-from Queue import Queue, Empty, Full
+from queue import Queue, Empty, Full
 import logging
 
 from .packet_controller import PacketController

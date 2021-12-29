@@ -23,7 +23,7 @@ class ServoWrite(Sketch):
             if self.servoval >= 180: self.delta = -1
             elif self.servoval <= 0: self.delta = 1
             self.servoval += self.delta
-            print self.servoval
+            print(self.servoval)
             self.servo.write(abs(self.servoval))
 
 if __name__ == "__main__":

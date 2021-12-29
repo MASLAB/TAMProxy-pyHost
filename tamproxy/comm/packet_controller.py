@@ -70,7 +70,9 @@ class PacketController(Process):
     def encode_raw_packet(self, pid, dest, payload):
         pack_format = self.PACK_FORMAT.format(len(payload))
         length = len(payload) + 5
-        return pack(pack_format, self.START_BYTE, pid, length, dest, payload)
+        payload = payload.encode()
+        result = pack(pack_format, self.START_BYTE, pid, length, dest, payload)
+        return result
 
     def set_continuous_enabled(self, bool):
         if bool: 
@@ -238,11 +240,11 @@ class PacketParser(object):
 
     MAX_PACKET_SIZE =   c.packet.max_size
     MIN_PACKET_SIZE =   c.packet.min_response_size
-    START_BYTE =        c.packet.start_byte
+    START_BYTE =        c.packet.start_byte.to_bytes(1, 'big')
 
     def __init__(self, tserial):
         self.tserial = tserial
-        self.receive_buffer = []
+        self.receive_buffer = bytearray()
         self.error_flag = False
         self.receive_length = self.MAX_PACKET_SIZE
         self.raw_packets = []
@@ -252,7 +254,7 @@ class PacketParser(object):
         while True:
             new_byte = self.tserial.read()
             if not new_byte: break
-            if new_byte == chr(self.START_BYTE) and not self.receive_buffer:
+            if new_byte == self.START_BYTE and not self.receive_buffer:
                 # Starting a new raw packet
                 self.error_flag = False
                 self.receive_length = self.MAX_PACKET_SIZE
@@ -269,7 +271,7 @@ class PacketParser(object):
         return self.raw_packets
 
     def process_byte(self, byte):
-        self.receive_buffer.append(byte)
+        self.receive_buffer.extend(byte)
         if len(self.receive_buffer) == 4:
             if ord(byte) > self.MAX_PACKET_SIZE:
                 self.raise_error_flag("Specified response length is too long")
@@ -278,13 +280,13 @@ class PacketParser(object):
             else: self.receive_length = ord(byte)
         elif len(self.receive_buffer) == self.receive_length:
             # the packet is done
-            self.raw_packets.append("".join(self.receive_buffer))
-            self.receive_buffer = []
+            self.raw_packets.append(self.receive_buffer)
+            self.receive_buffer = bytearray()
 
     def raise_error_flag(self, msg):
         logger.error(msg)
         self.error_flag = True
-        self.receive_buffer = []
+        self.receive_buffer = bytearray()
 
 PacketRequest = namedtuple('PacketRequest',
                            ["dest",

@@ -19,13 +19,13 @@ class Benchmark(Sketch):
 
     def loop(self):
         if self.elapsed > 5:
-            print self.throughput
-            print self.frequency
-            print self.sleep_duration
+            print(self.throughput)
+            print(self.frequency)
+            print(self.sleep_duration)
             self.stop()
         for i in xrange(34):
             if self.testpins[i].changed:
-                print i, self.testpins[i].val
+                print(i, self.testpins[i].val)
 
 if __name__ == "__main__":
     sketch = Benchmark(0.001)

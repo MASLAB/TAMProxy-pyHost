@@ -13,7 +13,7 @@ class EncoderRead(SyncedSketch):
     def loop(self):
         if self.timer.millis() > 100:
             self.timer.reset()
-            print self.encoder.val
+            print(self.encoder.val)
 
 if __name__ == "__main__":
     sketch = EncoderRead(1, -0.00001, 100)

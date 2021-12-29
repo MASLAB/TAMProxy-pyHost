@@ -37,7 +37,7 @@ class TimeOfFlight(Device):
 
     def handle_update(self, request, response):
         assert len(response) == 2
-        self.dist = (ord(response[0])<<8) + ord(response[1])
+        self.dist = (response[0]<<8) + response[1]
 
     def handle_enable(self, request, response):
-        print "Enabled TOF", "{0:b}".format(ord(response[0]))
+        print("Enabled TOF", "{0:b}".format(response[0]))

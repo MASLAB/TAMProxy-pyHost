@@ -5,10 +5,14 @@ try:
 	from .sketch import ROSSketch # Only declared if rospy installed
 except ImportError:
 	pass
+try:
+	from .sketch import ROS2Sketch # Only declared if rclpy installed
+except ImportError:
+	pass
 
 def _init_logging():
     # do this in a function to avoid exposing globals
-    from utils import config as c
+    from .utils import config as c
     import logging.config
     logging.config.dictConfig(c.logging)
 
