@@ -1,7 +1,7 @@
 
 host:
     # fill out port to disable automatic scan
-    port:                   '/dev/ttyACM0'
+    port:                   '/dev/ttyACM2'
     window_size:            8
         # Number of packets that can be dispatched and unacklowledged at
         # any point in time. Generally should be increased until increasing

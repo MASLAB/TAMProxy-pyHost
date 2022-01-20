@@ -2,6 +2,7 @@ from .device import ContinuousReadDevice
 from .. import config as c
 
 import ctypes
+import struct
 
 class FeedbackMotor(ContinuousReadDevice):
 
@@ -9,7 +10,7 @@ class FeedbackMotor(ContinuousReadDevice):
     WRITE_CODE =    c.devices.feedback_motor.write_code
     READ_CODE =     c.devices.encoder.read_code
 
-    def __init__(self, tamproxy, motor_pin_a, motor_pin_b, motor_pin_pwm, enc_pin_a, enc_pin_b):
+    def __init__(self, tamproxy, motor_pin_a, motor_pin_b, motor_pin_pwm, enc_pin_a, enc_pin_b, continuous=True):
         self.motor_pin_a = motor_pin_a
         self.motor_pin_b = motor_pin_b
         self.motor_pin_pwm = motor_pin_pwm
@@ -27,12 +28,13 @@ class FeedbackMotor(ContinuousReadDevice):
     def add_payload(self):
         return self.DEVICE_CODE + chr(self.motor_pin_a) + chr(self.motor_pin_b) + chr(self.motor_pin_pwm) + chr(self.enc_pin_a) + chr(self.enc_pin_b)
 
-    def write(self, direction, pwm):
+    def write(self, desired_angle):
         self.tamp.send_request(self.id,
                                self.WRITE_CODE + 
-                               chr(direction > 0) + 
-                               chr((int(pwm) >> 8) & 0xFF) + 
-                               chr(int(pwm) & 0xFF))
+                               chr(desired_angle > 0) + 
+                               chr((int(abs(desired_angle)) >> 16) & 0xFF) + 
+                               chr((int(abs(desired_angle)) >> 8) & 0xFF) + 
+                               chr(int(abs(desired_angle)) & 0xFF))
 
     def _handle_update(self, request, response):
         new_val = (
