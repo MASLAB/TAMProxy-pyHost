@@ -109,6 +109,7 @@ devices:
         write_code:     W       # 0x57
     feedback_motor:
         code:           m       # 0x6d
+        write_code:     w       # 0x77
     servo:
         code:           S       # 0x53
         write_code:     W       # 0x57

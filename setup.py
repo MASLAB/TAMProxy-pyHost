@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='tamproxy',
-    version='0.1.0',
+    version='0.1.1',
 
     description='TAMProxy Python Host',
     url='https://github.com/MASLAB/TAMProxy-pyHost',

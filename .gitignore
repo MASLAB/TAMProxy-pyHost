@@ -3,6 +3,8 @@
 # python junk
 *.pyc
 *.egg-info/
+*.egg
+build/
 # for generated config headers
 *.h
 # for logfiles               
