@@ -10,6 +10,10 @@ import signal
 from .. import config as c
 from .tamp_serial import *
 
+import warnings
+
+warnings.filterwarnings('ignore')
+
 logger = logging.getLogger('tamproxy.controller')
 
 class PacketController(Process):
@@ -135,7 +139,7 @@ class PacketController(Process):
                 new_pid = self.next_send_pid
                 self.en_route[new_pid] = (packet, time())
                 self.transmit(new_pid, *packet)
-                self.next_send_pid += np.uint16(1)
+                self.next_send_pid += np.uint16(1) # this will overflow if using ContinuousReadDevice, intended behavior
 
     def decode_raw_packet(self, raw_packet):
         payload_length = len(raw_packet) - 4
