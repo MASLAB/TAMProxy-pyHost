@@ -16,7 +16,7 @@ class FeedbackMotorWrite(Sketch):
 
         self.motor = FeedbackMotor(self.tamp, 3, 4, 5, 7, 6)
         self.motor.write(0)
-        self.motorangle = -2*math.pi
+        self.motorangle = math.pi
         self.timer = Timer()
 
         self.GR = 50.0 # gear ratio
