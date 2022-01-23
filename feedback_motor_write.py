@@ -2,11 +2,9 @@ from tamproxy import Sketch, SyncedSketch, Timer
 from tamproxy.devices import FeedbackMotor, DigitalOutput
 import math
 
-# Cycles a motor back and forth between -255 and 255 PWM every ~5 seconds
-
 class FeedbackMotorWrite(Sketch):
-    ENC_VCC = 8
-    ENC_GND = 9
+    ENC_VCC = 10
+    ENC_GND = 11
 
     def setup(self):
         self.enc_power = DigitalOutput(self.tamp, self.ENC_VCC)
@@ -14,7 +12,7 @@ class FeedbackMotorWrite(Sketch):
         self.enc_power.write(True)
         self.enc_ground.write(False)
 
-        self.motor = FeedbackMotor(self.tamp, 3, 4, 5, 7, 6)
+        self.motor = FeedbackMotor(self.tamp, 3, 2, 4, 8, 9)
         self.motor.write(0)
         self.motorangle = math.pi
         self.timer = Timer()

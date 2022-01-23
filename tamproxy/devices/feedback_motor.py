@@ -29,13 +29,11 @@ class FeedbackMotor(ContinuousReadDevice):
         return self.DEVICE_CODE + chr(self.motor_pin_a) + chr(self.motor_pin_b) + chr(self.motor_pin_pwm) + chr(self.enc_pin_a) + chr(self.enc_pin_b)
 
     def write(self, desired_angle):
-        self.tamp.send_request(self.id,
-                               self.WRITE_CODE + 
-                               chr(desired_angle > 0) + 
-                               chr((int(abs(desired_angle)) >> 16) & 0xFF) + 
-                               chr((int(abs(desired_angle)) >> 8) & 0xFF) + 
-                               chr(int(abs(desired_angle)) & 0xFF))
-
+        # convert float into byte array
+        ba = bytearray(struct.pack("f", float(desired_angle)))
+        payload = self.WRITE_CODE + chr(ba[0]) + chr(ba[1]) + chr(ba[2]) + chr(ba[3])
+        self.tamp.send_request(self.id, payload)
+                               
     def _handle_update(self, request, response):
         new_val = (
             (response[0]<<24) |

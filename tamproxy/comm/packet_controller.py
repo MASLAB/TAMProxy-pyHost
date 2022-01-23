@@ -74,7 +74,8 @@ class PacketController(Process):
     def encode_raw_packet(self, pid, dest, payload):
         pack_format = self.PACK_FORMAT.format(len(payload))
         length = len(payload) + 5
-        payload = payload.encode()
+        # the following encoding is important for floats to send correctly for TAMProxy
+        payload = bytes(payload, encoding='latin1')
         result = pack(pack_format, self.START_BYTE, pid, length, dest, payload)
         return result
 
