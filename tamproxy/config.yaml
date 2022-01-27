@@ -108,7 +108,8 @@ devices:
         code:           M       # 0x4d
         write_code:     W       # 0x57
     feedback_motor:
-        code:           m       # 0x6d
+        pos_code:       p       # 0x70
+        vel_code:       v       # 0x76
         write_code:     w       # 0x77
     servo:
         code:           S       # 0x53

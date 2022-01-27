@@ -1,12 +1,19 @@
 from tamproxy import Sketch, SyncedSketch, Timer
-from tamproxy.devices import Encoder
+from tamproxy.devices import Encoder, DigitalOutput
 
 # Prints a quadrature encoder's position
 class EncoderRead(SyncedSketch):
 
-    pins = 5, 6
+    ENC_VCC = 35
+    ENC_GND = 36
+
+    pins = 33, 34
 
     def setup(self):
+        self.enc_power = DigitalOutput(self.tamp, self.ENC_VCC)
+        self.enc_ground = DigitalOutput(self.tamp, self.ENC_GND)
+        self.enc_power.write(True)
+        self.enc_ground.write(False)
         self.encoder = Encoder(self.tamp, *self.pins, continuous=True)
         self.timer = Timer()
 

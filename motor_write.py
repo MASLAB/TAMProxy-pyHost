@@ -13,9 +13,9 @@ class MotorWrite(Sketch):
         self.timer = Timer()
 
     def loop(self):
-        if (self.timer.millis() > 10):
+        if (self.timer.millis() > 100):
             self.timer.reset()
-            if abs(self.motorval) == 255: self.delta = -self.delta
+            if abs(self.motorval) > 255: self.delta = -self.delta
             self.motorval += self.delta
             self.motor.write(self.motorval>0, abs(self.motorval))
 
