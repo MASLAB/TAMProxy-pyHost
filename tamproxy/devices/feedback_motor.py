@@ -10,10 +10,9 @@ class FeedbackMotor(ContinuousReadDevice):
     WRITE_CODE =    c.devices.feedback_motor.write_code
     READ_CODE =     c.devices.encoder.read_code
 
-    def __init__(self, tamproxy, motor_pin_a, motor_pin_b, motor_pin_pwm, enc_pin_a, enc_pin_b, velocity_control, continuous=True):
-        self.motor_pin_a = motor_pin_a
-        self.motor_pin_b = motor_pin_b
-        self.motor_pin_pwm = motor_pin_pwm
+    def __init__(self, tamproxy, dir_pin, pwm_pin, enc_pin_a, enc_pin_b, velocity_control, continuous=True):
+        self.dir_pin = dir_pin
+        self.pwm_pin = pwm_pin
         self.enc_pin_a = enc_pin_a
         self.enc_pin_b = enc_pin_b
         self.velocity_control = velocity_control
@@ -29,11 +28,11 @@ class FeedbackMotor(ContinuousReadDevice):
         super(FeedbackMotor, self).__init__(tamproxy)
 
     def __repr__(self):
-        return super(FeedbackMotor, self).__repr__(self.motor_pin_a, self.motor_pin_b, self.motor_pin_pwm, self.enc_pin_a, self.enc_pin_b, self.velocity_control)
+        return super(FeedbackMotor, self).__repr__(self.dir_pin, self.pwm_pin, self.enc_pin_a, self.enc_pin_b, self.velocity_control)
 
     @property
     def add_payload(self):
-        return self.DEVICE_CODE + chr(self.motor_pin_a) + chr(self.motor_pin_b) + chr(self.motor_pin_pwm) + chr(self.enc_pin_a) + chr(self.enc_pin_b)
+        return self.DEVICE_CODE + chr(self.dir_pin) + chr(self.pwm_pin) + chr(self.enc_pin_a) + chr(self.enc_pin_b)
 
     def write(self, setpoint):
         # convert float into byte array

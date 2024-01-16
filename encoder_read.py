@@ -4,10 +4,10 @@ from tamproxy.devices import Encoder, DigitalOutput
 # Prints a quadrature encoder's position
 class EncoderRead(SyncedSketch):
 
-    ENC_VCC = 35
-    ENC_GND = 36
+    ENC_VCC = 30
+    ENC_GND = 29
 
-    pins = 33, 34
+    pins = 32, 31
 
     def setup(self):
         self.enc_power = DigitalOutput(self.tamp, self.ENC_VCC)
