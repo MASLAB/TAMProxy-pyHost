@@ -1,7 +1,7 @@
 
 host:
     # fill out port to disable automatic scan
-    port:                   '/dev/ttyACM0'
+    port:                   '/dev/teensy'
     window_size:            8
         # Number of packets that can be dispatched and unacklowledged at
         # any point in time. Generally should be increased until increasing
@@ -77,9 +77,26 @@ boards:
         ftm1pin:            3       # Shouldn't have to change this
         ftm2pin:            29      # Shouldn't have to change this
         ftm3pin:            2       # Shouldn't have to change this
+    TEENSY41: &teensy41
+        # GENERAL
+        num_pins:           55      # Used to reset all pins
+        baud_rate:          115200  # Doesn't actually matter for pure USB
+        adc_resolution:     12      # How many bits to read with the ADC
+        # PWM SETTINGS
+        # See https://www.pjrc.com/teensy/td_pulse.html for
+        # ideal frequencies at a certain resolution
+        pwm_resolution:     7      # 16 max
+        pwm0_frequency:     1171875
+        pwm1_frequency:     1171875
+        pwm2_frequency:     1171875
+        pwm3_frequency:     1171875
+        # ftm0pin:            5       # Shouldn't have to change this
+        # ftm1pin:            3       # Shouldn't have to change this
+        # ftm2pin:            29      # Shouldn't have to change this
+        # ftm3pin:            2       # Shouldn't have to change this
 
 firmware:
-    <<: *teensy35   # Change this to whichever board you're targeting
+    <<: *teensy41   # Change this to whichever board you're targeting
 
 devices:
     devicelist:
