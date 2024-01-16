@@ -1,6 +1,8 @@
 from abc import ABCMeta, abstractmethod
 from tamproxy import TAMProxy
 from time import sleep, time
+import signal
+import sys
 try:
     import rclpy
     from rclpy.node import Node
@@ -117,6 +119,11 @@ if rclpy_installed:
         def __init__(self, rate=100, node_name="teensy"):
             super().__init__()                       # Calls Sketch.__init__()
             super(Sketch, self).__init__(node_name)  # Calls Node.__init__()
+            def signal_handler(sig, frame):
+                print('Stopping TAMProxy')
+                self.on_exit()
+                sys.exit()
+            signal.signal(signal.SIGINT, signal_handler)
 
         def run_setup(self):
             self.pre_setup()

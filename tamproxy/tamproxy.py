@@ -38,7 +38,7 @@ class TAMProxy(object):
         self.pf.pc.set_continuous_enabled(False)
         self.clear_devices()
         self.pf.stop()
-        self.pf.join()
+        self.pf.join(timeout=2)
         self.started = False
 
     def __enter__(self):
