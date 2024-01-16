@@ -13,7 +13,7 @@ class PacketForwarder(Thread):
         super(PacketForwarder, self).__init__()
         self.__stop = Event()
         self.packets_received = 0
-        self.sending_queue = Queue()
+        self.sending_queue = Queue(1000)
         self.callback_dict = dict()
         self.reset_callback = reset_callback
         self.pc = PacketController()
@@ -25,11 +25,11 @@ class PacketForwarder(Thread):
 
     def enqueue(self, device_id, payload, callback,
                       continuous=False, weight=1, remove=False):
-        try:
+        if not self.sending_queue.full():
             self.sending_queue.put_nowait((
                 (device_id, payload, continuous, weight, remove), callback
             ))
-        except Full:
+        else:
             logger.warn( "Packet queue is full, can't send packets fast enough")
 
     def empty_queue(self):
