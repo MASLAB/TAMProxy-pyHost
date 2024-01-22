@@ -4,18 +4,29 @@ import math
 import logging
 
 class FeedbackMotorWrite(Sketch):
-    ENC_VCC = 30
-    ENC_GND = 29
+    LEFT_ENC_VCC = 30
+    LEFT_ENC_GND = 29
+
+    RIGHT_ENC_VCC = 34
+    RIGHT_ENC_GND = 33
 
     def setup(self):
-        self.enc_power = DigitalOutput(self.tamp, self.ENC_VCC)
-        self.enc_ground = DigitalOutput(self.tamp, self.ENC_GND)
-        self.enc_power.write(True)
-        self.enc_ground.write(False)
+        self.left_enc_power = DigitalOutput(self.tamp, self.LEFT_ENC_VCC)
+        self.left_enc_ground = DigitalOutput(self.tamp, self.LEFT_ENC_GND)
+        self.left_enc_power.write(True)
+        self.left_enc_ground.write(False)
 
-        self.motor = FeedbackMotor(self.tamp, 16, 15, 32, 31, True)
-        self.motor_vel_rad_per_s = 6.28
+        self.right_enc_power = DigitalOutput(self.tamp, self.RIGHT_ENC_VCC)
+        self.right_enc_ground = DigitalOutput(self.tamp, self.RIGHT_ENC_GND)
+        self.right_enc_power.write(True)
+        self.right_enc_ground.write(False)
+
+        self.lmotor = FeedbackMotor(self.tamp, 16, 15, 32, 31, True)
+        self.left_motor_vel_rad_per_s = 1
         
+        self.rmotor = FeedbackMotor(self.tamp, 14, 13, 36, 35, True)
+        self.right_motor_vel_rad_per_s = -1
+
         self.timer = Timer()
         self.debug_timer = Timer()
 
@@ -26,10 +37,11 @@ class FeedbackMotorWrite(Sketch):
 
     def loop(self):
         if (self.timer.millis() > 5):
-            self.motor.write(self.motor_vel_rad_per_s)
+            self.lmotor.write(self.left_motor_vel_rad_per_s)
+            self.rmotor.write(self.right_motor_vel_rad_per_s)
             self.timer.reset()
         if (self.debug_timer.millis() > 100):
-            self.logger.info("Desired V: {} Measured V: {}".format(self.motor, self.motor.estimated_velocity))
+            self.logger.info("Left Desired V: {:.2f} Measured V: {:.2f}   Right Desired V: {:.2f} Measured V: {:.2f}".format(self.left_motor_vel_rad_per_s, self.lmotor.estimated_velocity, self.right_motor_vel_rad_per_s, self.rmotor.estimated_velocity))
             self.debug_timer.reset()
             
 if __name__ == "__main__":
