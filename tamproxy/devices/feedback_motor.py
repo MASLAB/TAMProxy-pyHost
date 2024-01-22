@@ -38,7 +38,7 @@ class FeedbackMotor(ContinuousReadDevice):
     def write(self, setpoint):
         # convert float into byte array
         ba = bytearray(struct.pack("f", float(setpoint)))
-        payload = self.WRITE_CODE + chr(ba[0]) + chr(ba[1]) + chr(ba[2]) + chr(ba[3]) + chr(self.gear_ratio)
+        payload = self.WRITE_CODE + chr(ba[0]) + chr(ba[1]) + chr(ba[2]) + chr(ba[3]) + chr(bytes([self.gear_ratio]))
         self.tamp.send_request(self.id, payload)
                                
     def _handle_update(self, request, response):
