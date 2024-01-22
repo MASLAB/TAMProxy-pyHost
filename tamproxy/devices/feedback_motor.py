@@ -10,12 +10,13 @@ class FeedbackMotor(ContinuousReadDevice):
     WRITE_CODE =    c.devices.feedback_motor.write_code
     READ_CODE =     c.devices.encoder.read_code
 
-    def __init__(self, tamproxy, dir_pin, pwm_pin, enc_pin_a, enc_pin_b, velocity_control, continuous=True):
+    def __init__(self, tamproxy, dir_pin, pwm_pin, enc_pin_a, enc_pin_b, velocity_control, gear_ratio=10.0, continuous=True):
         self.dir_pin = dir_pin
         self.pwm_pin = pwm_pin
         self.enc_pin_a = enc_pin_a
         self.enc_pin_b = enc_pin_b
         self.velocity_control = velocity_control
+        self.gear_ratio = gear_ratio
 
         self.enc_count = 0
         self.estimated_velocity = 0.0
@@ -28,7 +29,7 @@ class FeedbackMotor(ContinuousReadDevice):
         super(FeedbackMotor, self).__init__(tamproxy)
 
     def __repr__(self):
-        return super(FeedbackMotor, self).__repr__(self.dir_pin, self.pwm_pin, self.enc_pin_a, self.enc_pin_b, self.velocity_control)
+        return super(FeedbackMotor, self).__repr__(self.dir_pin, self.pwm_pin, self.enc_pin_a, self.enc_pin_b, self.velocity_control, self.gear_ratio)
 
     @property
     def add_payload(self):
@@ -37,7 +38,7 @@ class FeedbackMotor(ContinuousReadDevice):
     def write(self, setpoint):
         # convert float into byte array
         ba = bytearray(struct.pack("f", float(setpoint)))
-        payload = self.WRITE_CODE + chr(ba[0]) + chr(ba[1]) + chr(ba[2]) + chr(ba[3])
+        payload = self.WRITE_CODE + chr(ba[0]) + chr(ba[1]) + chr(ba[2]) + chr(ba[3]) + chr(self.gear_ratio)
         self.tamp.send_request(self.id, payload)
                                
     def _handle_update(self, request, response):
