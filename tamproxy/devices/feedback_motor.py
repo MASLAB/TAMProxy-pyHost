@@ -10,13 +10,13 @@ class FeedbackMotor(ContinuousReadDevice):
     WRITE_CODE =    c.devices.feedback_motor.write_code
     READ_CODE =     c.devices.encoder.read_code
 
-    def __init__(self, tamproxy, dir_pin, pwm_pin, enc_pin_a, enc_pin_b, velocity_control, gear_ratio=10.0, continuous=True):
+    def __init__(self, tamproxy, dir_pin, pwm_pin, enc_pin_a, enc_pin_b, velocity_control, gear_ratio=2, continuous=True):
         self.dir_pin = dir_pin
         self.pwm_pin = pwm_pin
         self.enc_pin_a = enc_pin_a
         self.enc_pin_b = enc_pin_b
         self.velocity_control = velocity_control
-        self.gear_ratio = gear_ratio
+        self.gear_ratio = gear_ratio # Defaults to 10.0
 
         self.enc_count = 0
         self.estimated_velocity = 0.0
