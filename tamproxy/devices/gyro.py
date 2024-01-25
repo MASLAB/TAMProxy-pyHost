@@ -11,10 +11,11 @@ class Gyro(ContinuousReadDevice):
     RANGE_500DPS = 2
     RANGE_2000DPS = 3
 
-    def __init__(self, tamproxy, sa0pin, range=RANGE_250DPS, integrate=True):
+    def __init__(self, tamproxy, sdopin, range=RANGE_250DPS, integrate=True):
         self.range = range
-        self.sa0pin = sa0pin
+        self.sdopin = sdopin
         self.integrate = integrate
+        self.time = None
         self.x = 0
         self.y = 0
         self.z = 0
@@ -25,12 +26,12 @@ class Gyro(ContinuousReadDevice):
 
     @property
     def add_payload(self):
-        return self.DEVICE_CODE + chr(self.sa0pin) + chr(self.range)
+        return self.DEVICE_CODE + chr(self.sdopin) + chr(self.range)
     
     @staticmethod
     def _convert(response, start_index):
         # Get 16 bit value
-        res = response[start_index] << 8 + response[start_index + 1]
+        res = response[start_index] << 8 | response[start_index + 1]
         # Make signed
         if res > 0x7fff:
             res -= 0xffff

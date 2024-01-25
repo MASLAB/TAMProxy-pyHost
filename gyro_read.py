@@ -6,10 +6,10 @@ from tamproxy.devices import Gyro
 class GyroRead(SyncedSketch):
 
     # Set me!
-    sa0_pin = 10
+    sdo_pin = 20
 
     def setup(self):
-        self.gyro = Gyro(self.tamp, self.sa0_pin, range=Gyro.RANGE_250DPS, integrate=True)
+        self.gyro = Gyro(self.tamp, self.sdo_pin, range=Gyro.RANGE_250DPS)
         self.timer = Timer()
 
     def loop(self):
