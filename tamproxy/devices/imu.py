@@ -34,13 +34,13 @@ class Imu(ContinuousReadDevice):
     def _handle_update(self, request, response):
         # print(response)
         assert len(response) == 18
-        self.ax = us2s((response[0]<<8) | response[1]) / 1000.0
-        self.ay = us2s((response[2]<<8) | response[3]) / 1000.0
-        self.az = us2s((response[4]<<8) | response[5]) / 1000.0
-        self.gx = us2s((response[6]<<8) | response[7]) / 1000.0
-        self.gy = us2s((response[8]<<8) | response[9]) / 1000.0
-        self.gz = us2s((response[10]<<8) | response[11]) / 1000.0
-        self.mx = us2s((response[12]<<8) | response[13]) / 1000.0
-        self.my = us2s((response[14]<<8) | response[15]) / 1000.0
-        self.mz = us2s((response[16]<<8) | response[17]) / 1000.0
+        self.ax = us2s((response[0]<<8) | response[1]) / 100.0
+        self.ay = us2s((response[2]<<8) | response[3]) / 100.0
+        self.az = us2s((response[4]<<8) | response[5]) / 100.0
+        self.gx = us2s((response[6]<<8) | response[7]) / 100.0
+        self.gy = us2s((response[8]<<8) | response[9]) / 100.0
+        self.gz = us2s((response[10]<<8) | response[11]) / 100.0
+        self.mx = us2s((response[12]<<8) | response[13]) / 100.0
+        self.my = us2s((response[14]<<8) | response[15]) / 100.0
+        self.mz = us2s((response[16]<<8) | response[17]) / 100.0
 
