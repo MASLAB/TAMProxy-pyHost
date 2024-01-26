@@ -40,9 +40,9 @@ class Gyro(ContinuousReadDevice):
     def _handle_update(self, request, response):
         assert len(response) == 6
         # Assemble 16-bit returned values
-        x = Gyro._convert(response, 0)
-        y = Gyro._convert(response, 2)
-        z = Gyro._convert(response, 4)
+        x = Gyro._convert(response, 0) / 1000.0
+        y = Gyro._convert(response, 2) / 1000.0
+        z = Gyro._convert(response, 4) / 1000.0
         
         if self.integrate:
             now = time.time()
