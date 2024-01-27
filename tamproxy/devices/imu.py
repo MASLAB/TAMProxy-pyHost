@@ -11,8 +11,7 @@ class Imu(ContinuousReadDevice):
     DEVICE_CODE = c.devices.imu.code
     READ_CODE   = c.devices.imu.read_code
 
-    def __init__(self, tamproxy, dipin, continuous=True):
-        self.dipin = dipin
+    def __init__(self, tamproxy, continuous=True):
         self.ax = 0
         self.ay = 0
         self.az = 0
@@ -24,12 +23,9 @@ class Imu(ContinuousReadDevice):
         self.mz = 0
         super(Imu, self).__init__(tamproxy, continuous)
 
-    def __repr__(self):
-        return super(Imu, self).__repr__(self.dipin)
-
     @property
     def add_payload(self):
-        return self.DEVICE_CODE + chr(self.dipin)
+        return self.DEVICE_CODE
 
     def _handle_update(self, request, response):
         # print(response)

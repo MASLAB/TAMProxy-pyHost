@@ -6,11 +6,8 @@ from tamproxy.devices import Imu
 
 class ImuRead(SyncedSketch):
 
-    # Set me!
-    di_pin = 20
-
     def setup(self):
-        self.imu = Imu(self.tamp, self.di_pin)
+        self.imu = Imu(self.tamp)
         self.timer = Timer()
 
     def loop(self):
